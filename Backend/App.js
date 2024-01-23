@@ -1,15 +1,13 @@
 const express = require('express');
 const dotenv = require('dotenv').config();
 const app = express();
+
 const port = process.env.PORT
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+const studentRoute = require('./routes/student_route');
 
-app.get('/home', (req, res) => {
-    res.send('Hello Home!');
-});
+app.use('/student', studentRoute);
+
 app.listen(port, () => {
     console.log(`Example app listening at  http://localhost:${port}`);
 });

@@ -1,9 +1,16 @@
 ###
 
-GET http://localhost:3000/
-
+GET http://localhost:3000/student
 
 ###
 
-GET http://localhost:3000/home
+POST http://localhost:3000/student
+
+###
+
+PUT http://localhost:3000/student
+
+###
+
+DELETE  http://localhost:3000/student
 
