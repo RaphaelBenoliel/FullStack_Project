@@ -5,15 +5,19 @@ router.get("/", (req, res) => {
   res.send("post get");
 });
 
-router.post("/", (req, res) => {
-  res.send("post post");
+router.get("/:id", (req, res) => {
+  res.send("post get");
 });
 
-router.put("/", (req, res) => {
+router.post("/", (req, res) => {
+  res.send("post post"+ req.body);
+});
+
+router.put("/:id", (req, res) => {
   res.send("post put");
 });
 
-router.delete("/", (req, res) => {
+router.delete("/:id", (req, res) => {
   res.send("post delete");
 });
 

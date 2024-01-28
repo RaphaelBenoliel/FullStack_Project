@@ -5,6 +5,13 @@ GET http://localhost:3000/student
 ###
 
 POST http://localhost:3000/student
+Content-Type: application/json
+    
+    {
+        "name": "John3",
+        "age": 20,
+        "_id": "02222333"
+    }
 
 ###
 
