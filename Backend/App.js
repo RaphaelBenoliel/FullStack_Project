@@ -2,11 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv').config();
-const app = express();
-const port = process.env.PORT
-
 const studentRoute = require('./routes/student_route');
 const postRoute = require('./routes/post_route');
+
+const app = express();
+
+const port = process.env.PORT
 
 mongoose.connect(process.env.DATABASE_URL);
 const db = mongoose.connection;
