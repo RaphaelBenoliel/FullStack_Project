@@ -41,8 +41,17 @@ const postStudents = async (req, res) => {
   
 };
   
-const putStudents = (req, res) => {
-  res.send("student put");
+const putStudents = async (req, res) => {
+  console.log("student put");
+  try{
+    const student = await Student.findByIdAndUpdate(req.params.id, req.body, {new: true});
+    res.status(200).send({student, message: "Student updated successfully"
+    });
+
+  }catch(error){
+      console.log(error);
+      res.status(400).send(error.message);
+  }
 };
 
 const deleteStudents = (req, res) => {
