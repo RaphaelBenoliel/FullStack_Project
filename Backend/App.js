@@ -1,25 +1,24 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const dotenv = require('dotenv').config();
-const studentRoute = require('./routes/student_route');
-const postRoute = require('./routes/post_route');
-
+const express = require("express");
 const app = express();
+const dotenv = require("dotenv").config();
+const mongoose = require("mongoose");
+const studentRoute = require("./routes/student_route");
+const postRoute = require("./routes/post_route");
+const bodyParser = require("body-parser");
 
-const port = process.env.PORT
+const initApp = () => {
+  const promise = new Promise(async (resolve) => {
+    const db = mongoose.connection;
+    db.on("error", (err) => console.log(err));
+    db.once("open", () => console.log("Database connected"));
+    await mongoose.connect(process.env.DATABASE_URL);
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use("/student", studentRoute);
+    app.use("/post", postRoute);
+    resolve(app);
+  });
+  return promise;
+};
 
-mongoose.connect(process.env.DATABASE_URL);
-const db = mongoose.connection;
-db.on('error', (err) =>console.log(err));
-db.once('open', () => console.log('Connected to DB'));
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use('/student', studentRoute);
-app.use('/post', postRoute);
-
-app.listen(port, () => {
-    console.log(`Example app listening at  http://localhost:${port}`);
-});
+module.exports = initApp;

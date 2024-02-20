@@ -54,8 +54,15 @@ const putStudents = async (req, res) => {
   }
 };
 
-const deleteStudents = (req, res) => {
-  res.send("student delete");
+const deleteStudents = async (req, res) => {
+  console.log("student delete");
+  try {
+    await Student.findByIdAndDelete(req.params.id);
+    return res.status(200).send();
+  } catch (error) {
+    console.log(error);
+    res.status(400).send(error.message);
+  }
 };
 
 module.exports = { getStudents, postStudents, putStudents, deleteStudents, getStudentById };
