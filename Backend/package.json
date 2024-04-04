@@ -4,12 +4,12 @@
   "description": "Backend server node.js",
   "main": "app.js",
   "scripts": {
-    "start": "tsc && node dist/src/Server.js",
-    "dev": "nodemon ./src/Server.ts",
-    "test": "jest --detectOpenHandles --forceExit",
-    "testStudent": "jest --detectOpenHandles --forceExit ./src/tests/student.test.ts",
-    "testAuth": "jest --detectOpenHandles --forceExit ./src/tests/auth.test.ts",
-    "testPost": "jest --detectOpenHandles --forceExit ./src/tests/post.test.ts",
+    "start": "cp .env_dev .env && tsc && node dist/src/Server.js",
+    "dev": "cp .env_dev .env && nodemon ./src/Server.ts",
+    "test": "cp .env_test .env && jest --detectOpenHandles --forceExit",
+    "testStudent": "cp .env_test .env && jest --detectOpenHandles --forceExit ./src/tests/student.test.ts",
+    "testAuth": "cp .env_test .env && jest --detectOpenHandles --forceExit --runInBand ./src/tests/auth.test.ts",
+    "testPost": "cp .env_test .env && jest --detectOpenHandles --forceExit ./src/tests/post.test.ts",
     "lint": "eslint . --ext .ts"
   },
   "author": "Raphael Benoliel",

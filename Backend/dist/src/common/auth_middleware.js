@@ -12,21 +12,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const base_controller_1 = __importDefault(require("./base_controller"));
-const post_model_1 = __importDefault(require("../models/post_model"));
-class PostController extends base_controller_1.default {
-    constructor() {
-        super(post_model_1.default);
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("auth middleware");
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) {
+        return res.status(401).send("missing token");
     }
-    post(req, res) {
-        const _super = Object.create(null, {
-            post: { get: () => super.post }
-        });
-        return __awaiter(this, void 0, void 0, function* () {
-            req.body.owner = req.body.user._id;
-            _super.post.call(this, req, res);
-        });
-    }
-}
-exports.default = new PostController();
-//# sourceMappingURL=post_controller.js.map
+    jsonwebtoken_1.default.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).send("invalid token");
+        }
+        req.body.user = user;
+        next();
+    });
+});
+exports.default = authMiddleware;
+//# sourceMappingURL=auth_middleware.js.map
