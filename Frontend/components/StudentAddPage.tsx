@@ -1,10 +1,10 @@
 // import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, TextInput, StatusBar, TouchableOpacity } from 'react-native';
 import React, { FC, useState } from 'react';
+import StudentModel, { Student } from '../model/StudentModel';
 
 
-export default function StudentAddPage
-() {
+const StudentAddPage: FC<{ navigation: any }> = ({ navigation }) => {
   const [name, onChangeName] = useState('');
   const [id, onChangeId] = useState('');
   const [address, onChangeAddress] = useState('');
@@ -12,11 +12,20 @@ export default function StudentAddPage
     onChangeName('');
     onChangeId('');
     onChangeAddress('');
+    navigation.navigate('StudentListPage');
   }
   const onSave = () => {
     console.log('Name:', name);
     console.log('ID:', id);
     console.log('Address:', address);
+    const student: Student = {
+      name: name,
+      id: id,
+      imgUrl: address,
+    }
+    StudentModel.addStudent(student);
+    navigation.navigate('StudentListPage');
+
   }
 
   return (
@@ -98,3 +107,5 @@ const styles = StyleSheet.create({
     // padding: 10,
   }
 });
+
+export default StudentAddPage;
