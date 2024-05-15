@@ -18,6 +18,21 @@ const userSchema = new mongoose_1.default.Schema({
         required: true,
         minlength: 6, // Minimum password length
     },
+    name: {
+        type: String,
+        required: true,
+    },
+    phone: {
+        type: String,
+        required: true,
+    },
+    address: {
+        type: String,
+        required: true,
+    },
+    imgUrl: {
+        type: String,
+    },
     tokens: {
         type: [String],
     },

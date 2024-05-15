@@ -17,9 +17,9 @@ const authMiddleware = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     console.log("auth middleware");
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    // if (token == null) {
-    //     return res.status(401).send("missing token");
-    // }
+    if (token == null) {
+        return res.status(401).send("missing token");
+    }
     jsonwebtoken_1.default.verify(token, process.env.TOKEN_SECRET, (err, user) => {
         if (err) {
             return res.status(403).send("invalid token");

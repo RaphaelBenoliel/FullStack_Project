@@ -19,6 +19,9 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(req.body);
     const email = req.body.email;
     const password = req.body.password;
+    const name = req.body.name;
+    const phone = req.body.phone;
+    const address = req.body.address;
     if (email == null || password == null) {
         return res.status(400).send("missing email or password");
     }
@@ -31,7 +34,10 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const hashedPassword = yield bcrypt_1.default.hash(password, salt);
         const newUser = yield user_model_1.default.create({
             email: email,
-            password: hashedPassword
+            password: hashedPassword,
+            name: name,
+            phone: phone,
+            address: address
         });
         return res.status(200).send(newUser);
     }
@@ -60,11 +66,14 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield user_model_1.default.findOne({ email: email });
         if (user == null) {
-            return res.status(400).send("invalid email or password");
+            return res.status(400).send("invalid email");
         }
+        console.log(user.password);
+        console.log(password);
         const valid = yield bcrypt_1.default.compare(password, user.password);
+        console.log(valid);
         if (!valid) {
-            return res.status(400).send("invalid email or password");
+            return res.status(400).send("invalid password");
         }
         const { accessToken, refreshToken } = generateTokens(user._id.toString());
         if (user.tokens == null) {

@@ -32,6 +32,24 @@ class BaseController {
             }
         });
     }
+    getUser(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                console.log('reqqqqqqqqqq', req.body.token);
+                const user = yield this.itemModel.findOne({ tokens: req.body.token });
+                if (!user) {
+                    return res.status(404).send("token user not found");
+                }
+                else {
+                    return res.status(200).send(user);
+                }
+            }
+            catch (error) {
+                console.log(error);
+                res.status(400).send(error.message);
+            }
+        });
+    }
     getById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log(req.params);
@@ -52,10 +70,10 @@ class BaseController {
     }
     post(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("student post ");
+            console.log("post");
             try {
-                const student = yield this.itemModel.create(req.body);
-                res.status(201).send(student);
+                const item = yield this.itemModel.create(req.body);
+                res.status(201).send(item);
             }
             catch (error) {
                 console.log(error);
@@ -65,8 +83,22 @@ class BaseController {
     }
     //updatye a sudent with the given id
     put(req, res) {
-        console.log("student put");
-        res.status(400).send("Not implemented");
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("put");
+            try {
+                const item = yield this.itemModel.findByIdAndUpdate(req.body._id, req.body);
+                if (!item) {
+                    return res.status(404).send("not found");
+                }
+                else {
+                    return res.status(200).send(item);
+                }
+            }
+            catch (error) {
+                console.log(error);
+                res.status(400).send(error.message);
+            }
+        });
     }
     remove(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
