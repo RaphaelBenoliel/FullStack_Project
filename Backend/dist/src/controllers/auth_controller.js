@@ -41,15 +41,10 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 const generateTokens = (userId) => {
-    const accessToken = jsonwebtoken_1.default.sign({
-        _id: userId
-    }, process.env.TOKEN_SECRET, {
-        expiresIn: process.env.TOKEN_EXPIRATION
-    });
-    const refreshToken = jsonwebtoken_1.default.sign({
-        _id: userId,
-        salt: Math.random()
-    }, process.env.REFRESH_TOKEN_SECRET);
+    const accessToken = jsonwebtoken_1.default.sign({ _id: userId }, process.env.TOKEN_SECRET || "defaultSecret", // Use default secret if process.env.TOKEN_SECRET is undefined
+    { expiresIn: process.env.TOKEN_EXPIRATION });
+    const refreshToken = jsonwebtoken_1.default.sign({ _id: userId, salt: Math.random() }, process.env.REFRESH_TOKEN_SECRET || "defaultRefreshSecret" // Use default secret if process.env.REFRESH_TOKEN_SECRET is undefined
+    );
     return {
         accessToken: accessToken,
         refreshToken: refreshToken

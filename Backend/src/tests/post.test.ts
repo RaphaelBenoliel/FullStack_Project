@@ -1,9 +1,9 @@
 import request from "supertest";
 import appInit from "../App";
 import mongoose from "mongoose";
-import Post from "../models/post_model";
+import Post from "../routes/models/post_model";
 import { Express } from "express";
-import User from "../models/user_model";
+import User from "../routes/models/user_model";
 
 let app: Express;
 

@@ -2,12 +2,12 @@ import request from "supertest";
 import appInit from "../App";
 import mongoose from "mongoose";
 import { Express } from "express";
-import User from "../models/user_model";
+import User from "../routes/models/user_model";
 
 
 const user = {
     email: "teszt@gmail.com",
-    password: "123456"
+    password: "1234"
 }
 
 let app: Express;
