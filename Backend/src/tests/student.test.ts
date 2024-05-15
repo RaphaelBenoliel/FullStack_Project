@@ -1,9 +1,9 @@
 import request from "supertest";
 import appInit from "../App";
 import mongoose from "mongoose";
-import Student from "../routes/models/student_model";
+import Student from "../models/student_model";
 import { Express } from "express";
-import User from "../routes/models/user_model";
+import User from "../models/user_model";
 
 const testUser = {
   email: "teststudent@gmail.com",
