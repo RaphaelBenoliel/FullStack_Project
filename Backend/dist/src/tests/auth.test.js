@@ -18,7 +18,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const user_model_1 = __importDefault(require("../models/user_model"));
 const user = {
     email: "teszt@gmail.com",
-    password: "123456"
+    password: "1234"
 };
 let app;
 let accessToken = "";
