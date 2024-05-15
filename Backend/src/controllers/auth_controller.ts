@@ -5,8 +5,12 @@ import jwt from "jsonwebtoken";
 
 const register = async (req: Request, res: Response) => {
     console.log(req.body);
-    const email = req.body.email;
-    const password = req.body.password;
+    const email = req.body.user.email;
+    const password = req.body.user.password;
+    const name = req.body.user.name;
+    const phone = req.body.user.phone;
+    const address = req.body.user.address;
+    const imgUrl = req.body.user.imgUrl;
 
     if (email == null || password == null) {
         return res.status(400).send("missing email or password");
@@ -22,7 +26,12 @@ const register = async (req: Request, res: Response) => {
 
         const newUser = await User.create({
             email: email,
-            password: hashedPassword
+            password: hashedPassword,
+            name: name,
+            phone: phone,
+            address: address,
+            imgUrl: imgUrl,
+            
         });
 
         return res.status(200).send(newUser);
@@ -34,16 +43,16 @@ const register = async (req: Request, res: Response) => {
 
 
 const generateTokens = (userId: string): { accessToken: string, refreshToken: string } => {
-    const accessToken = jwt.sign({
-        _id: userId
-    }, process.env.TOKEN_SECRET, {
-        expiresIn: process.env.TOKEN_EXPIRATION
-    });
+    const accessToken = jwt.sign(
+        { _id: userId },
+        process.env.TOKEN_SECRET || "defaultSecret", // Use default secret if process.env.TOKEN_SECRET is undefined
+        { expiresIn: process.env.TOKEN_EXPIRATION }
+    );
 
-    const refreshToken = jwt.sign({
-        _id: userId,
-        salt: Math.random()
-    }, process.env.REFRESH_TOKEN_SECRET);
+    const refreshToken = jwt.sign(
+        { _id: userId, salt: Math.random() },
+        process.env.REFRESH_TOKEN_SECRET || "defaultRefreshSecret" // Use default secret if process.env.REFRESH_TOKEN_SECRET is undefined
+    );
 
     return {
         accessToken: accessToken,
@@ -64,12 +73,14 @@ const login = async (req: Request, res: Response) => {
         const user = await User.findOne({ email: email });
 
         if (user == null) {
-            return res.status(400).send("invalid email or password");
+            return res.status(400).send("invalid email");
         }
-
+        console.log(user.password);
+        console.log(password)
         const valid = await bcrypt.compare(password, user.password);
+        console.log(valid);
         if (!valid) {
-            return res.status(400).send("invalid email or password");
+            return res.status(400).send("invalid password");
         }
 
         const { accessToken, refreshToken } = generateTokens(user._id.toString());

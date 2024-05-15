@@ -1,11 +1,12 @@
 import client from './client';
+import { IUser } from '../model/UserModel';
 
-const login = (email, password) => {
+const login = (email:any, password:any) => {
     return client.post('/auth/login', { email, password });
 }
 
-const register = (email, password,name, phone, address) => {
-    return client.post('/auth/register', { email, password,name, phone, address });
+const register = (user : IUser) => {
+    return client.post('/auth/register', { user: user });
 }
 
 const logout = () => {
@@ -14,6 +15,6 @@ const logout = () => {
 
 export default {
     login,
-    register,
+     register,
     logout,
 };

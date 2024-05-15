@@ -21,6 +21,20 @@ class BaseController<ModelType> {
             res.status(400).send(error.message);
         }
     }
+    async getUser(req: Request, res: Response) {
+        try {
+            // console.log('reqqqqqqqqqq', req.body.token);
+          const user = await this.itemModel.findOne({ tokens: req.body.token });
+          if (!user) {
+            return res.status(404).send("token user not found");
+          } else {
+            return res.status(200).send(user);
+          }
+        } catch (error) {
+          console.log(error);
+          res.status(400).send(error.message);
+        }
+      }
 
     async getById(req: Request, res: Response) {
         console.log(req.params);
@@ -38,10 +52,10 @@ class BaseController<ModelType> {
     }
 
     async post(req: Request, res: Response) {
-        console.log("student post ");
+        console.log("post");
         try {
-            const student = await this.itemModel.create(req.body);
-            res.status(201).send(student);
+            const item = await this.itemModel.create(req.body);
+            res.status(201).send(item);
         } catch (error) {
             console.log(error);
             res.status(400).send(error.message);
@@ -49,9 +63,19 @@ class BaseController<ModelType> {
     }
 
     //updatye a sudent with the given id
-    put(req: Request, res: Response) {
-        console.log("student put");
-        res.status(400).send("Not implemented");
+    async put(req: Request, res: Response) {
+        console.log("put");
+        try {
+            const item = await this.itemModel.findByIdAndUpdate(req.body._id,req.body );
+            if (!item) {
+                return res.status(404).send("not found");
+            } else {
+                return res.status(200).send(item);
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(400).send(error.message);
+        }
     }
 
     async remove(req: Request, res: Response) {
