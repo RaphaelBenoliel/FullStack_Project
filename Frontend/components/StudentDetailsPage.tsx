@@ -4,9 +4,9 @@ import StudentModel from '../model/StudentModel';
 
 
 const StudentDetailsPage: FC<{ route: any, navigation: any }> = ({ route, navigation }) => {
-    const student = StudentModel.getStudentById(route.params.id);
+    // const student = StudentModel.getStudentById(route.params.id);
     useEffect(() => {
-        console.log('StudentDetailsPage mounted', student?.name);
+        onsole.log('StudentDetailsPage mounted', student?.name);
         navigation.setOptions({
             title: student?.name,
             headerRight: () => (
