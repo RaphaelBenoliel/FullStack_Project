@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
+import Post from "../models/post_model";
+
 
 class BaseController<ModelType> {
     itemModel: mongoose.Model<ModelType>;
@@ -65,13 +67,15 @@ class BaseController<ModelType> {
     //updatye a sudent with the given id
     async put(req: Request, res: Response) {
         console.log("put");
+        console.log(req.params);
         try {
-            const item = await this.itemModel.findByIdAndUpdate(req.body._id,req.body );
+            const item = await this.itemModel.findByIdAndUpdate(req.params.id, req.body );
             if (!item) {
                 return res.status(404).send("not found");
             } else {
                 return res.status(200).send(item);
             }
+            
         } catch (error) {
             console.log(error);
             res.status(400).send(error.message);
@@ -79,13 +83,33 @@ class BaseController<ModelType> {
     }
 
     async remove(req: Request, res: Response) {
-        console.log("student delete");
+        console.log("delete");
         try {
             await this.itemModel.findByIdAndDelete(req.params.id);
             return res.status(200).send();
         } catch (error) {
             console.log(error);
             res.status(400).send(error.message);
+        }
+    }
+    async updateOwnerPosts(req: Request, res: Response) {
+        console.log("rebody:  " , req.body);
+
+        const ownerId = req.body.owner; // Assuming you pass ownerId as a parameter
+
+        try {
+            // Find all posts belonging to the owner
+            const posts = await Post.find({ "owner._id": ownerId });
+
+            // Update each post
+            for (const post of posts) {
+                await Post.updateOne({ _id: post._id }, { $set: req.body });
+            }
+
+            res.status(200).json({ message: "Owner's posts updated successfully" });
+        } catch (error) {
+            console.error("Error updating owner's posts:", error);
+            res.status(500).json({ message: "Internal server error" });
         }
     }
 }

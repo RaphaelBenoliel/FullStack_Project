@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import User from "../models/user_model";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
+
+const client = new OAuth2Client();
 
 const register = async (req: Request, res: Response) => {
     console.log(req.body);
@@ -149,10 +152,51 @@ const refresh = async (req: Request, res: Response) => {
         }
     });
 }
+const googleSignIn = async (req: Request, res: Response) => {
+    try{
+        const ticket = await client.verifyIdToken({
+        idToken: req.body.credentialResponse,
+        audience: process.env.GOOGLE_CLIENT_ID
+    });
+    const payload = ticket.getPayload();
+    const email = payload?.email;
+    if(email != null){
+        let user = await User.findOne({'email': email});
+            if(user == null){
+                user = await User.create({
+                    email: email,
+                    imgUrl: payload?.picture,
+                    name: payload?.name
+                });
+            }
+            const { accessToken, refreshToken } = generateTokens(user._id.toString());
+            if (user.tokens == null){
+                user.tokens = [refreshToken];
+            }else {
+                user.tokens.push(refreshToken);
+            }
+            await user.save();
+
+            return res.status(200).send({
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+                email: email,
+                _id: user._id,
+                imgUrl: user.imgUrl,
+            });
+        }
+
+    }catch (error){
+        return res.status(400).send(error.message);
+    }
+   
+    
+}
 
 export default {
     register,
     login,
     logout,
-    refresh
+    refresh,
+    googleSignIn
 }

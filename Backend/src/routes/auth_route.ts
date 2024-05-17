@@ -78,6 +78,7 @@ const router = express.Router();
 *               $ref: '#/components/schemas/User'
 */
 router.post("/register", authController.register);
+router.post('/google', authController.googleSignIn);
 
 /**
 * @swagger
