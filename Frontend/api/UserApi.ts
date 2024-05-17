@@ -7,7 +7,7 @@ const getUser = (token: String) => {
     return client.post('/user', { token });
     };
 const updateUser = (token: string,  _id: string,name: string, phone: string, address: string , imgUrl:string) => {
-    return client.put(`user/:${_id}`, { token, _id, name, phone, address , imgUrl});
+    return client.put(`user/${_id}`, { token, _id, name, phone, address , imgUrl});
     };
     
 

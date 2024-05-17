@@ -1,5 +1,7 @@
 import { Alert } from "react-native";
 import UserApi from "../api/UserApi";
+import AuthApi from "../api/AuthApi";
+import PostApi from "../api/PostApi";
 
 
 export interface IUser  {
@@ -29,6 +31,16 @@ export const getUser = async (token: string) => {
 
 export const updateUser = async (token: any, _id: any, name: string, phone: string, address: string, imgUrl: string) => {
     const response:any = await UserApi.updateUser(token, _id, name, phone, address , imgUrl);
+    try {
+      const resposts:any = await PostApi.updatePostsOwner({_id, name, imgUrl});
+      console.log('resposts:', resposts);
+
+        
+    } catch (error) {
+        console.error('Error:', error);
+    }
+    
+    
     if (response.status == 200) {
         return response.data;
     }

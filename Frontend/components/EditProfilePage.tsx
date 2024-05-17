@@ -1,12 +1,12 @@
 import { useState,useEffect,FC } from "react";
-import { View, Text, StyleSheet, Image, TextInput, Button, Alert,TouchableOpacity,KeyboardAvoidingView,Platform, ScrollView} from "react-native";
+import { View, Text, StyleSheet, Image, TextInput, ActivityIndicator, Button, Alert,TouchableOpacity, ScrollView} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import UserModel,{IUser} from "../model/UserModel";
 import UserApi from "../api/UserApi";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from "expo-image-picker";
 import { validateInputs, ValidationResult } from '../utils/validationUtils';
-import { on } from "form-data";
+
 
 const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
     const [user, setUser] = useState<IUser>();
@@ -18,11 +18,14 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
     const [token, setToken] = useState<String>();
     const [imgUri, onChangeImgUri] = useState('');
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [loading, setLoading] = useState<boolean>(false);
     
     console.log('User:', user);
 
     useEffect(() => {
         const getUserInfo = async () => {
+          setLoading(true);
+          try {
             const token = await AsyncStorage.getItem('token');
             if (token) {
                 const user = await UserModel.getUser(token);
@@ -32,6 +35,11 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
                 onChangeImgUri(user?.imgUrl.replace('localhost','192.168.1.164'));
                 onChangeEmail(user?.email);
             }
+        } catch (error) {
+            console.error('Error:', error);
+        } finally {
+            setLoading(false);
+        }
         }
         getUserInfo();
     }, [])
@@ -48,6 +56,7 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
           setErrors(validationResult.errors);
           return;
         }
+        setLoading(true);
         try {
           if (imgUri !== "" || imgUri !== user?.imgUrl) {
             const url = await UserApi.uploadImage(imgUri);
@@ -60,7 +69,9 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
           navigation.reset({ index: 0, routes: [{ name: 'My Profile' }] })
         } catch (error) { 
           console.error('Error:', error);
-        }
+        }  finally {
+        setLoading(false);
+    }
     }
     const requestPermission = async () => {
       const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -97,7 +108,8 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
       }
     };
     return (
-      <View style={styles.container}> 
+      <View style={styles.container}>
+        {loading && <ActivityIndicator size="large" color="#00ff00" style={styles.loadingIndicator} />} 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
            <View>
            
@@ -124,15 +136,15 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
                 value={password}
                 onChangeText={onChangePassword}
                 placeholder="Password"
-                placeholderTextColor={'white'}
+                placeholderTextColor={'#aea5a5'}
             />
              {errors.password ? <Text style={styles.error}>{errors.password}</Text> : null}
             <TextInput
                 style={styles.input}
                 value={name}
                 onChangeText={onChangeName}
-                placeholder="Name"
-                placeholderTextColor={'white'}
+                placeholder={user?.name}
+                placeholderTextColor={'#aea5a5'}
             />
             {errors.name ? <Text style={styles.error}>{errors.name}</Text> : null}
             <TextInput
@@ -140,7 +152,7 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
                 value={phone}
                 onChangeText={onChangePhone}
                 placeholder="Phone"
-                placeholderTextColor={'white'}
+                placeholderTextColor={'#aea5a5'}
             />
             {errors.phone ? <Text style={styles.error}>{errors.phone}</Text> : null}
             <TextInput
@@ -148,7 +160,7 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
                 value={address}
                 onChangeText={onChangeAddress}
                 placeholder="Address"
-                placeholderTextColor={'white'}
+                placeholderTextColor={'#aea5a5'}
             />
             {errors.address ? <Text style={styles.error}>{errors.address}</Text> : null}    
              <View style={styles.buttons}>
@@ -169,51 +181,50 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        // marginTop: StatusBar.currentHeight,
-        flex: 1,
-        backgroundColor: '#0d1117',
-      },
-      avatar: {
-        width: 150,
-        height: 150,
-        alignSelf: 'center',
-        marginTop: -40,
-        borderRadius: 50,
-      },
-      input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        borderColor: 'white',
-        color: 'white',
-      },
-      buttons: {
-        // flex:1,
-        marginHorizontal: 10,
-        // borderRadius: 10,
-        // borderWidth: 1,
-        // borderColor: 'white',
-    
-        backgroundColor: '#841584',
-        flexDirection: 'row',
-        // alignSelf: 'baseline',
-      },
-      button: {
-        flex: 1,
-        margin: 10,
-        alignItems: 'center',
-      },
-      buttonText: {
-        color: 'white',
-        // padding: 10,
-      },
-      cameraButton: {
-        color: "white",
-        alignSelf: "flex-start",
-        marginTop: 0,
+  container: {
+    // marginTop: StatusBar.currentHeight,
+    flex: 1,
+    backgroundColor: '#0d1117',
+  },
+  avatar: {
+    width: 150,
+    height: 150,
+    alignSelf: 'center',
+    marginTop: -40,
+    borderRadius: 50,
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#372245ee',
+    padding: 10,
+    borderColor: 'white',
+    color: 'white',
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+    button: {
+      flex: 1,
+      marginHorizontal: 5,
+      alignItems: 'center',
+      padding: 10,
+      backgroundColor: '#372245ee',
+      borderRadius: 5,
     },
+    buttonText: {
+      color: 'white',
+      fontSize: 16,
+    },
+    cameraButton: {
+      color: "white",
+      alignSelf: "flex-start",
+      marginTop: 0,
+  },
   galleryButton: {
     color: "white",
     alignSelf: "flex-end",
@@ -222,10 +233,16 @@ const styles = StyleSheet.create({
   error: {
     color: 'red',
     marginLeft: 12,
-},
+  },
 scrollContainer: {
   flexGrow: 1,
   justifyContent: 'center',
+},
+loadingIndicator: {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  zIndex: 1000,
 },
 });
 

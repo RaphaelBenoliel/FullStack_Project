@@ -2,9 +2,9 @@
 import { StyleSheet, Text, View, Image, TextInput, StatusBar, TouchableOpacity, Button } from 'react-native';
 import React, { FC, useState,useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import StudentListPage from './components/StudentListPage';
+import PostListPage from './components/PostListPage';
 import StudentDetailsPage from './components/StudentDetailsPage';
-import StudentAddPage from './components/StudentAddPage';
+import PostAddPage from './components/PostAddPage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import { NavigationContainer } from '@react-navigation/native';

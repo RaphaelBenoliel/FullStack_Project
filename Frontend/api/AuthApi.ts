@@ -12,9 +12,25 @@ const register = (user : IUser) => {
 const logout = () => {
     return client.post('/auth/logout');
 }
+const SignInWithGoogle = async (credentialToken: any) => {
+    console.log("SignInWithGoogle()" + credentialToken);
+    const data = {
+        credentialResponse: credentialToken
+    };
+    try{
+    const response:any  = await client.post("/auth/google", data);
+    console.log("response: " + response.data.accessToken);
+  
+    return response;
+    }catch(err){
+    console.log("fail registering user " + err);
+    }
+  
+  }
 
 export default {
     login,
-     register,
+    register,
     logout,
+    SignInWithGoogle
 };

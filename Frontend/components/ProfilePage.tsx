@@ -25,7 +25,7 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
                 <Button
                     onPress={() => navigation.navigate('EditProfilePage' )}
                     title="Edit Profile"
-                    color={'#841584'}
+                    color={'#372245ee'}
                     
                 />
             ),     
@@ -33,7 +33,7 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
                 <Button
                     onPress={() => onLogout()}
                     title="LOGOUT"
-                    color={'#841584'}
+                    color={'#372245ee'}
                     
                 />
             ),
@@ -41,6 +41,7 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
     }, [navigation])
         
         const onLogout = async () => {
+
             await AsyncStorage.removeItem('token');
             navigation.reset({
                 index: 0,
@@ -58,9 +59,13 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
         {user?.imgUrl !== "" && (
           <Image style={styles.avatar} source={{uri: user?.imgUrl.replace('localhost','192.168.1.164') }} />
         )}
+            <Text style={styles.text}> Name</Text>
             <Text style={styles.input}>{user?.name}</Text>
-            <Text style={styles.input}>{user?.email}</Text>     
+            <Text style={styles.text}> Email</Text>
+            <Text style={styles.input}>{user?.email}</Text>
+            <Text style={styles.text}> Phone</Text>     
             <Text style={styles.input}>{user?.phone}</Text>
+            <Text style={styles.text}> Address</Text>
             <Text style={styles.input}>{user?.address}</Text>
             {/* <TouchableOpacity style={styles.button} onPress={onLogout}>
                 <Text style={styles.buttonText}>Logout</Text>
@@ -104,10 +109,18 @@ const styles = StyleSheet.create({
         height: 40,
         margin: 12,
         borderWidth: 1,
+        borderRadius: 5,
+        backgroundColor: '#372245ee',
         padding: 10,
-        borderColor: 'white',
+        // borderColor: 'white',
         color: 'white',
-      },
+    },
+    text: {
+        color: 'white',
+        fontSize: 17,
+        fontWeight: 'bold',
+        marginLeft: 10,
+    },
 });
 
 export default ProfilePage;
