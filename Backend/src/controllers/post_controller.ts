@@ -1,6 +1,7 @@
 import BaseController from "./base_controller";
 import Post, { IPost } from "../models/post_model";
 import { Request, Response } from "express";
+// import mongoose from "mongoose";
 
 class PostController extends BaseController<IPost> {
     constructor() {
@@ -8,9 +9,10 @@ class PostController extends BaseController<IPost> {
     }
 
     async post(req: Request, res: Response) {
-        req.body.owner = req.body.user._id;
+        console.log("reqqqqqq" , req.body);
         super.post(req, res);
     }
+   
 
 
 }
