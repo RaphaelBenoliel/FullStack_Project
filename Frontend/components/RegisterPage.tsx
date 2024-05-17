@@ -1,10 +1,11 @@
 import React,{useState, FC, useEffect} from 'react';
-import { StyleSheet, View, StatusBar, Text,TextInput,Alert,TouchableOpacity, Image} from 'react-native';
+import { StyleSheet, View, StatusBar,ScrollView, Text,TextInput,Alert,TouchableOpacity, Image} from 'react-native';
 import AuthApi from '../api/AuthApi';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as ImagePicker from "expo-image-picker";
 import UserModel, { IUser } from '../model/UserModel';
 import UserApi from '../api/UserApi';
+import { ValidationResult, validateInputs } from '../utils/validationUtils';
 
 
 const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
@@ -14,6 +15,7 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
     const [phone, onChangePhone] = useState('');
     const [address, onChangeAddress] = useState('');
     const [imgUri, onChangeImgUri] = useState('');
+    const [errors, setErrors] = useState<Record<string, string>>({});
     
     const onSave = async () => {
         console.log('Email:', email);
@@ -22,13 +24,19 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
         console.log('Phone:', phone);
         console.log('Address:', address);
         console.log('imgUri:', imgUri);
+        const validationResult: ValidationResult = validateInputs(email, password, name, phone, address);
+        console.log('Validation result:', validationResult);
+        if (!validationResult.isValid) {
+          setErrors(validationResult.errors);
+          return;
+        }
         const user: IUser = {
             email: email,
             password: password,
             name: name,
             phone: phone,
             address: address,
-            imgUrl: 'url',
+            imgUrl: '',
             tokens: [],
             _id: '',
 
@@ -38,6 +46,9 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
                 const url = await UserApi.uploadImage(imgUri);
                 user.imgUrl = url;
                 console.log("url: " + user.imgUrl);
+              }else{
+                Alert.alert("Please select an image");
+                return;
               }
             const response = await AuthApi.register(user);
             console.log('Response:', response);
@@ -88,62 +99,70 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor="#0d1117" barStyle="light-content"/>
-            
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
             {/* <Image style={styles.avatar} source={require('../assets/ES-Network.png')} /> */}
             <Text style={styles.title}>ES-Network</Text>
             <View>
-        {imgUri === "" && (
+        {/* {imgUri === "" && (
           <Image
             style={styles.avatar}
             source={require("../assets/avatar.png")}
           />
-        )}
+        )} */}
         {imgUri !== "" && (
           <Image style={styles.avatar} source={{ uri: imgUri }} />
         )}
 
-        <TouchableOpacity onPress={openCamera}>
-          <Ionicons name={"camera"} style={styles.cameraButton} size={50} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={openGallery}>
-          <Ionicons name={"image"} style={styles.galleryButton} size={50} />
-        </TouchableOpacity>
+       
       </View>
             <TextInput 
                 style={styles.input}
                 value={email}
                 onChangeText={onChangeEmail}
                 placeholder="Email"
-                placeholderTextColor={'white'}
+                placeholderTextColor={'#aea5a5'}
             />
+            {errors.email ? <Text style={styles.error}>{errors.email}</Text> : null}
             <TextInput
                 style={styles.input}
                 value={password}
                 onChangeText={onChangePassword}
                 placeholder="Password"
-                placeholderTextColor={'white'}
+                placeholderTextColor={'#aea5a5'}
+                secureTextEntry
             />
+            {errors.password ? <Text style={styles.error}>{errors.password}</Text> : null}
             <TextInput
                 style={styles.input}
                 value={name}
                 onChangeText={onChangeName}
                 placeholder="Name"
-                placeholderTextColor={'white'}
+                placeholderTextColor={'#aea5a5'}
             />
+            {errors.name ? <Text style={styles.error}>{errors.name}</Text> : null}
             <TextInput
                 style={styles.input}
                 value={phone}
                 onChangeText={onChangePhone}
                 placeholder="Phone"
-                placeholderTextColor={'white'}
+                placeholderTextColor={'#aea5a5'}
             />
+            {errors.phone ? <Text style={styles.error}>{errors.phone}</Text> : null}
             <TextInput
                 style={styles.input}
                 value={address}
                 onChangeText={onChangeAddress}
                 placeholder="Address"
-                placeholderTextColor={'white'}
+                placeholderTextColor={'#aea5a5'}
             />
+            {errors.address ? <Text style={styles.error}>{errors.address}</Text> : null}
+             <TouchableOpacity onPress={openCamera}>
+          <Ionicons name={"camera"} style={styles.cameraButton} size={50} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={openGallery}>
+          <Ionicons name={"image"} style={styles.galleryButton} size={50} />
+        </TouchableOpacity>
+
             <TouchableOpacity style={styles.button} onPress={onSave}>
                 <Text style={styles.buttonText}>REGISTER</Text>
             </TouchableOpacity>
@@ -153,6 +172,7 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
             onPress={() => navigation.navigate('LoginPage')}>
             <Text style={styles.signup}>LOGIN</Text>
         </TouchableOpacity>
+        </ScrollView>
         </View>
     );
 }
@@ -172,16 +192,18 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     input: {
-        height: 40,
-        margin: 12,
-        borderWidth: 1,
-        padding: 10,
-        borderColor: 'white',
-        color: 'white',
+      height: 40,
+      margin: 12,
+      borderWidth: 1,
+      borderRadius: 5,
+      backgroundColor: '#372245ee',
+      padding: 10,
+      borderColor: 'white',
+      color: 'white',
     },
     button: {
         alignItems: 'center',
-        backgroundColor: '#841584',
+        backgroundColor: '#372245ee',
         padding: 10,
         margin: 12,
     },
@@ -217,6 +239,15 @@ const styles = StyleSheet.create({
         color: "white",
         alignSelf: "flex-end",
         marginTop: -50,
+      },
+      error: {
+        color: 'red',
+        // fontSize: 14,
+        marginLeft: 10,
+      },
+      scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
       },
 });
 

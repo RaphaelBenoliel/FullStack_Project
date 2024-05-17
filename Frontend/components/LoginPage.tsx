@@ -48,6 +48,7 @@ const LoginPage: FC<{ navigation: any }> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      {/* <GoogleSignIn /> */}
       <Image style={styles.avatar} source={require('../assets/ES-Network.png')} />
       <Text style={styles.title}>ES-Network</Text>
       <TextInput
@@ -55,25 +56,27 @@ const LoginPage: FC<{ navigation: any }> = ({ navigation }) => {
         value={email}
         onChangeText={onChangeEmail}
         placeholder="Email"
-        placeholderTextColor={'white'}
+        placeholderTextColor={'#aea5a5'}
       />
       <TextInput
         style={styles.input}
         value={password}
         onChangeText={onChangePassword}
         placeholder="Password"
-        placeholderTextColor={'white'}
+        placeholderTextColor={'#aea5a5'}
         secureTextEntry
       />
       <TouchableOpacity style={styles.button} onPress={onSave}>
         <Text style={styles.buttonText}>LOGIN</Text>
       </TouchableOpacity>
-      <GoogleSignIn />
+      
       <Text style={styles.textdown}>Don't have an account?</Text>
       <TouchableOpacity onPress={() => navigation.navigate('RegisterPage')}>
         <Text style={styles.signup}>SIGN UP</Text>
       </TouchableOpacity>
+      
     </View>
+    
   );
 };
 
@@ -94,6 +97,8 @@ const styles = StyleSheet.create({
     height: 40,
     margin: 12,
     borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: '#372245ee',
     padding: 10,
     borderColor: 'white',
     color: 'white',
@@ -102,7 +107,7 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     alignItems: 'center',
-    backgroundColor: '#841584',
+    backgroundColor: '#372245ee',
   },
   buttonText: {
     color: 'white',
