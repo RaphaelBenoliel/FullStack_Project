@@ -6,6 +6,7 @@ import UserApi from "../api/UserApi";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from "expo-image-picker";
 import { validateInputs, ValidationResult } from '../utils/validationUtils';
+import { BASE_URL } from "../config";
 
 
 const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
@@ -19,9 +20,7 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
     const [imgUri, onChangeImgUri] = useState('');
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [loading, setLoading] = useState<boolean>(false);
-    
-    console.log('User:', user);
-
+  
     useEffect(() => {
         const getUserInfo = async () => {
           setLoading(true);
@@ -31,24 +30,24 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
                 const user = await UserModel.getUser(token);
                 setUser(user);
                 setToken(token);
-                console.log('User:', user?.imgUrl);
-                onChangeImgUri(user?.imgUrl.replace('localhost','192.168.1.164'));
+                // console.log('User:', user?.imgUrl);
+                onChangeImgUri(user?.imgUrl.replace('localhost',BASE_URL));
                 onChangeEmail(user?.email);
             }
         } catch (error) {
             console.error('Error:', error);
-        } finally {
+        }   finally {
+          // Artificial delay to show the loading indicator
+          setTimeout(() => {
             setLoading(false);
+          }, 1000); // 2 seconds delay
         }
         }
         getUserInfo();
     }, [])
 
     const onSave = async () => {
-        console.log('Password:', password);
-        console.log('Name:', name);
-        console.log('Phone:', phone);
-        console.log('Address:', address);
+        
          // Provide a default value of an empty string if user?.email is undefined
         const validationResult: ValidationResult = validateInputs(email, password, name, phone, address);
         console.log('Validation result:', validationResult);
@@ -69,9 +68,12 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
           navigation.reset({ index: 0, routes: [{ name: 'My Profile' }] })
         } catch (error) { 
           console.error('Error:', error);
-        }  finally {
-        setLoading(false);
-    }
+        }   finally {
+          // Artificial delay to show the loading indicator
+          setTimeout(() => {
+            setLoading(false);
+          }, 2000); // 2 seconds delay
+        }
     }
     const requestPermission = async () => {
       const { granted } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -131,13 +133,13 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
         </TouchableOpacity>
       </View>
             <Text style={styles.input}>{user?.email}</Text>
-            <TextInput
+            {/* <TextInput
                 style={styles.input}
                 value={password}
                 onChangeText={onChangePassword}
                 placeholder="Password"
                 placeholderTextColor={'#aea5a5'}
-            />
+            /> */}
              {errors.password ? <Text style={styles.error}>{errors.password}</Text> : null}
             <TextInput
                 style={styles.input}
@@ -151,7 +153,7 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
                 style={styles.input}
                 value={phone}
                 onChangeText={onChangePhone}
-                placeholder="Phone"
+                placeholder={user?.phone}
                 placeholderTextColor={'#aea5a5'}
             />
             {errors.phone ? <Text style={styles.error}>{errors.phone}</Text> : null}
@@ -159,7 +161,7 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
                 style={styles.input}
                 value={address}
                 onChangeText={onChangeAddress}
-                placeholder="Address"
+                placeholder={user?.address}
                 placeholderTextColor={'#aea5a5'}
             />
             {errors.address ? <Text style={styles.error}>{errors.address}</Text> : null}    

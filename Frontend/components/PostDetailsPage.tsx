@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Button, Alert, TextInput, StatusBar } from 'react-native';
 import React, { useState, FC, useEffect } from 'react';
 import PostModel from '../model/PostModel';
-import { Ionicons } from '@expo/vector-icons';
+import { BASE_URL } from '../config';
 
 const PostDetailsPage: FC<{ route: any, navigation: any }> = ({ route, navigation }) => {
     console.log('PostDetailsPage mounted', route.params);
@@ -53,7 +53,7 @@ const PostDetailsPage: FC<{ route: any, navigation: any }> = ({ route, navigatio
           <Text style={styles.input}>{post?.comment}</Text>
           {post.commentUrl == '' ? null : (
             <Image style={styles.image}
-            source={{ uri: post?.commentUrl.replace('localhost', '192.168.1.164')}}
+            source={{ uri: post?.commentUrl.replace('localhost', BASE_URL)}}
             />
           )}
             

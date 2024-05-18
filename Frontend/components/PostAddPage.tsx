@@ -7,6 +7,7 @@ import {
   Image,
   StyleSheet,
   Alert,
+  ScrollView,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -102,6 +103,7 @@ const openCamera = async () => {
   };
 
   return (
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
     <View style={styles.container}>
       <View style={styles.commentContainer}>
       <TextInput
@@ -134,6 +136,7 @@ const openCamera = async () => {
         </TouchableOpacity>
       </View>
     </View>
+    </ScrollView>
   );
 };
 
@@ -184,7 +187,11 @@ const styles = StyleSheet.create({
   buttonText: {
       color: 'white',
       fontSize: 16,
-  }
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'space-between',
+  },
 });
 
 export default PostAddPage;

@@ -1,19 +1,31 @@
 import React, {FC,useState, useEffect} from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Image,Button } from "react-native";
+import { StyleSheet, View, Text, Image, Button, ActivityIndicator } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserModel, { IUser } from "../model/UserModel";
+import { BASE_URL } from "../config";
 
 
 const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
    
     const [user, setUser] = useState<IUser>();
+    const [loading, setLoading] = useState(true);
+
     useEffect(() => {
             const getUserInfo = async () => {
-                const token = await AsyncStorage.getItem('token');
-                if (token) {
-                    const user = await UserModel.getUser(token);
-                    setUser(user);
-                }
+                try {
+                    const token = await AsyncStorage.getItem('token');
+                    if (token) {
+                        const user = await UserModel.getUser(token);
+                        setUser(user);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                } finally {
+                    // Artificial delay to show the loading indicator
+                    setTimeout(() => {
+                      setLoading(false);
+                    }, 1000); // 2 seconds delay
+                  }
             }
             getUserInfo();
     },[])
@@ -50,6 +62,7 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
             };
     return (
         <View style={styles.container}>
+            {loading && <ActivityIndicator size="large" color="#00ff00" style={styles.loadingIndicator} />} 
                  {user?.imgUrl === "" && (
           <Image
             style={styles.avatar}
@@ -57,7 +70,7 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
           />
         )}
         {user?.imgUrl !== "" && (
-          <Image style={styles.avatar} source={{uri: user?.imgUrl.replace('localhost','192.168.1.164') }} />
+          <Image style={styles.avatar} source={{uri: user?.imgUrl.replace('localhost',BASE_URL) }} />
         )}
             <Text style={styles.text}> Name</Text>
             <Text style={styles.input}>{user?.name}</Text>
@@ -67,9 +80,6 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
             <Text style={styles.input}>{user?.phone}</Text>
             <Text style={styles.text}> Address</Text>
             <Text style={styles.input}>{user?.address}</Text>
-            {/* <TouchableOpacity style={styles.button} onPress={onLogout}>
-                <Text style={styles.buttonText}>Logout</Text>
-            </TouchableOpacity> */}
         </View>
     ) 
 }
@@ -121,6 +131,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginLeft: 10,
     },
+    loadingIndicator: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        zIndex: 1000,
+      },
 });
 
 export default ProfilePage;

@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
+import { CLIENT_ID, ANDROID_CLIENT_ID } from '../config';
+
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -9,8 +11,8 @@ const GoogleSignIn: React.FC = () => {
     const [accessToken, setAccessToken] = useState<string | null>(null);
     const [userInfo, setUserInfo] = useState<any>(null);
     const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-        clientId: '1023628505389-cppq919vnstgvmalho4ukj0acjaobnpj.apps.googleusercontent.com',
-        androidClientId: '1023628505389-sg08bt25dt1209e9hv0674r15dorquu9.apps.googleusercontent.com',
+        clientId: CLIENT_ID,
+        androidClientId: ANDROID_CLIENT_ID,
     });
 
     React.useEffect(() => {

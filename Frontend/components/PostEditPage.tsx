@@ -15,6 +15,7 @@ import PostModel, { Post } from '../model/PostModel';
 import UserModel, { IUser } from '../model/UserModel';
 import { Ionicons } from '@expo/vector-icons';
 import UserApi from '../api/UserApi';
+import { BASE_URL } from '../config';
 
 const PostEditPage: FC<{ route: any, navigation: any }> = ({ route, navigation }) => {
   const [comment, setComment] = useState<string>('');
@@ -110,8 +111,9 @@ const openCamera = async () => {
   };
 
   return (
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
     <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+       
           <View style={styles.commentContainer}>
       <TextInput
         style={styles.input}
@@ -127,7 +129,7 @@ const openCamera = async () => {
       commentUrl ? (
         <Image source={{ uri: commentUrl }} style={styles.image} />
       ) : (
-        <Image source={{ uri: postEdit.commentUrl.replace('localhost', '192.168.1.164') }} style={styles.image} />
+        <Image source={{ uri: postEdit.commentUrl.replace('localhost', BASE_URL) }} style={styles.image} />
       )
     )}
       </View>
@@ -151,8 +153,9 @@ const openCamera = async () => {
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
       </View>
-        </ScrollView>
+        
     </View>
+    </ScrollView>
   );
 };
 
