@@ -14,6 +14,7 @@ const GoogleSignIn: React.FC = () => {
         clientId: CLIENT_ID,
         androidClientId: ANDROID_CLIENT_ID,
     });
+    // console.log('Request:', response);
 
     React.useEffect(() => {
         if (response?.type === 'success') {
@@ -24,21 +25,34 @@ const GoogleSignIn: React.FC = () => {
     }, [response]);
 
     async function fetchUserInfo(token: string) {
-        try {
-            const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            const userInfoResponse = await response.json();
-            setUserInfo(userInfoResponse);
-        } catch (error) {
-            console.error('Error fetching user info:', error);
-        }
-    }
+      console.log('Token:', token);
+      try {
+          if (!token) {
+              console.error('Access token is missing or invalid.');
+              return;
+          }
+  
+          const response = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+              headers: { Authorization: `Bearer ${token}` },
+          });
+  
+          if (!response.ok) {
+              console.error('Error fetching user info:', response.statusText);
+              return;
+          }
+  
+          const userInfoResponse = await response.json();
+          setUserInfo(userInfoResponse);
+      } catch (error) {
+          console.error('Error fetching user info:', error);
+      }
+  }
+  
 
     const ShowUserInfo = () => {
         if (userInfo) {
             return (
-                <Text>{JSON.stringify(userInfo)}</Text>
+                <Text style= {styles.text}>{JSON.stringify(userInfo)}</Text>
             );
         } else {
             return null;
@@ -74,6 +88,11 @@ const styles = StyleSheet.create({
         alignSelf:'center',
         
         color: 'red',
+    },
+    text: {
+        color: 'white',
+        fontSize: 16,
+        margin: 20,
     },
 
 });
