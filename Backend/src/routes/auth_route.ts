@@ -27,18 +27,43 @@ const router = express.Router();
 *     User:
 *       type: object
 *       required:
-*         - email
-*         - password
+*         - user
 *       properties:
-*         email:
-*           type: string
-*           description: The user email
-*         password:
-*           type: string
-*           description: The user password
-*       example:
-*         email: 'bob@gmail.com'
-*         password: '123456'
+*         user:
+*           type: object
+*           required:
+*             - email
+*             - password
+*             - name
+*             - phone
+*             - address
+*             - imgUrl
+*           properties:
+*             email:
+*               type: string
+*               description: The user email
+*             password:
+*               type: string
+*               description: The user password
+*             name:
+*               type: string
+*               description: The user name
+*             phone:
+*               type: string
+*               description: The user phone
+*             address:
+*               type: string
+*               description: The user address
+*             imgUrl:
+*               type: string
+*               description: The user imgUrl
+*           example:
+*             email: 'bob@gmail.com'
+*             password: '123456'
+*             name: 'Bob'
+*             phone: '1234567890'
+*             address: '1234 Main St'
+*             imgUrl: 'https://www.google.com'
 *     Tokens:
 *       type: object
 *       required:
@@ -91,10 +116,20 @@ router.post('/google', authController.googleSignIn);
 *       content:
 *         application/json:
 *           schema:
-*             $ref: '#/components/schemas/User'
+*             type: object
+*             properties:
+*               email:
+*                 type: string
+*                 description: The user email
+*               password:
+*                 type: string
+*                 description: The user password
+*             example:
+*               email: 'bob@gmail.com'
+*               password: '123456'
 *     responses:
 *       200:
-*         description: The acess & refresh tokens
+*         description: The access & refresh tokens
 *         content:
 *           application/json:
 *             schema:

@@ -15,10 +15,9 @@ const register = async (req: Request, res: Response) => {
     const address = req.body.user.address;
     const imgUrl = req.body.user.imgUrl;
 
-    if (email == null || password == null) {
-        return res.status(400).send("missing email or password");
+    if (!email || !password || !name || !phone || !address || !imgUrl) {
+        return res.status(400).send("All fields are required");
     }
-
     try {
         const user = await User.findOne({ email: email });
         if (user) {

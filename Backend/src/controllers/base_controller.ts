@@ -25,8 +25,8 @@ class BaseController<ModelType> {
     }
     async getUser(req: Request, res: Response) {
         try {
-            // console.log('reqqqqqqqqqq', req.body.token);
-          const user = await this.itemModel.findOne({ tokens: req.body.token });
+            console.log('reqqqqqqqqqq', req.params.token);
+          const user = await this.itemModel.findOne({ tokens: req.params.token });
           if (!user) {
             return res.status(404).send("token user not found");
           } else {
@@ -63,8 +63,7 @@ class BaseController<ModelType> {
             res.status(400).send(error.message);
         }
     }
-
-    //updatye a sudent with the given id
+    
     async put(req: Request, res: Response) {
         console.log("put");
         console.log(req.params);
