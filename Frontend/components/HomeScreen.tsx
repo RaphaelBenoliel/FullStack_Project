@@ -122,7 +122,7 @@ const HomeScreen: FC = () => {
         tabBarActiveTintColor: '#fff',
         tabBarInactiveTintColor: '#8b949e',
         tabBarIcon: ({ color, size }) => {
-          let iconName;
+          let iconName:any ;
 
           if (route.name === 'Posts') {
             iconName = 'list';

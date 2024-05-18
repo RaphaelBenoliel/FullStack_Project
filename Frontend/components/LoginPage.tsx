@@ -1,4 +1,4 @@
-import { StyleSheet, View, TextInput, Text, TouchableOpacity, Alert, Image } from "react-native";
+import { StyleSheet, View, TextInput, Text, TouchableOpacity, Alert, Image,ActivityIndicator, StatusBar } from "react-native";
 import React, { FC, useState,useEffect } from "react";
 import AuthApi from "../api/AuthApi";
 import GoogleSignIn from "./GoogleSignIn";
@@ -8,18 +8,30 @@ const LoginPage: FC<{ navigation: any }> = ({ navigation }) => {
   const [email, onChangeEmail] = useState('');
   const [password, onChangePassword] = useState('');
   const [auth, setAuth] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
-      const token = await AsyncStorage.getItem('token');
-      console.log('Token:', token);
-      if (token) {
-        setAuth(true);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'HomeScreen' }], 
-        });
+      setLoading(true);
+      try {
+        const token = await AsyncStorage.getItem('token');
+        // console.log('Token:', token);
+        if (token) {
+          setAuth(true);
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'HomeScreen' }], 
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        // Artificial delay to show the loading indicator
+        setTimeout(() => {
+          setLoading(false);
+        }, 2000); // 2 seconds delay
       }
+      
     };
     checkAuth();
   }
@@ -28,9 +40,10 @@ const LoginPage: FC<{ navigation: any }> = ({ navigation }) => {
   const onSave = async () => {
     console.log('Email:', email);
     console.log('Password:', password);
+    setLoading(true);
     try {
       const response: any = await AuthApi.login(email, password);
-      console.log('Response:', response);
+      // console.log('Response:', response);
       if (response.status === 400) {
         Alert.alert(String(response.data)); 
       }
@@ -43,14 +56,23 @@ const LoginPage: FC<{ navigation: any }> = ({ navigation }) => {
       }
     } catch (error) {
       console.error('Error:', error);
+    }finally {
+      // Artificial delay to show the loading indicator
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000); // 2 seconds delay
     }
   };
 
   return (
+    
     <View style={styles.container}>
-      {/* <GoogleSignIn /> */}
+      
+      {loading && <ActivityIndicator size="large" color="#00ff00" style={styles.loadingIndicator} />} 
+      <StatusBar backgroundColor="#0d1117" barStyle="light-content"/>
       <Image style={styles.avatar} source={require('../assets/ES-Network.png')} />
       <Text style={styles.title}>ES-Network</Text>
+      
       <TextInput
         style={styles.input}
         value={email}
@@ -74,7 +96,7 @@ const LoginPage: FC<{ navigation: any }> = ({ navigation }) => {
       <TouchableOpacity onPress={() => navigation.navigate('RegisterPage')}>
         <Text style={styles.signup}>SIGN UP</Text>
       </TouchableOpacity>
-      
+      <GoogleSignIn />
     </View>
     
   );
@@ -129,6 +151,12 @@ const styles = StyleSheet.create({
     height: 150,
     alignSelf: 'center',
     marginTop: 20,
+  },
+  loadingIndicator: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    zIndex: 1000,
   },
 });
 

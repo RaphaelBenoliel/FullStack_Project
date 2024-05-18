@@ -1,10 +1,10 @@
 import React,{useState, FC, useEffect} from 'react';
-import { StyleSheet, View, StatusBar,ScrollView, Text,TextInput,Alert,TouchableOpacity, Image} from 'react-native';
-import AuthApi from '../api/AuthApi';
+import { StyleSheet, View, StatusBar,ScrollView,ActivityIndicator, Text,TextInput,Alert,TouchableOpacity, Image} from 'react-native';
 import Ionicons from "@expo/vector-icons/Ionicons";
 import * as ImagePicker from "expo-image-picker";
 import UserModel, { IUser } from '../model/UserModel';
 import UserApi from '../api/UserApi';
+import AuthApi from '../api/AuthApi';
 import { ValidationResult, validateInputs } from '../utils/validationUtils';
 
 
@@ -16,6 +16,7 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
     const [address, onChangeAddress] = useState('');
     const [imgUri, onChangeImgUri] = useState('');
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [loading, setLoading] = useState<boolean>(false);
     
     const onSave = async () => {
         console.log('Email:', email);
@@ -41,6 +42,7 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
             _id: '',
 
         }
+        setLoading(true);
         try {
             if (imgUri !== "") {
                 const url = await UserApi.uploadImage(imgUri);
@@ -60,6 +62,11 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
             }
         } catch (error) {
             console.error('Error:', error);
+        }  finally {
+          // Artificial delay to show the loading indicator
+          setTimeout(() => {
+            setLoading(false);
+          }, 2000); // 2 seconds delay
         }
     }
     const requestPermission = async () => {
@@ -98,6 +105,7 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
       };
     return (
         <View style={styles.container}>
+          {loading && <ActivityIndicator size="large" color="#00ff00" style={styles.loadingIndicator} />} 
             <StatusBar backgroundColor="#0d1117" barStyle="light-content"/>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
             {/* <Image style={styles.avatar} source={require('../assets/ES-Network.png')} /> */}
@@ -248,6 +256,12 @@ const styles = StyleSheet.create({
       scrollContainer: {
         flexGrow: 1,
         justifyContent: 'center',
+      },
+      loadingIndicator: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        zIndex: 1000,
       },
 });
 
