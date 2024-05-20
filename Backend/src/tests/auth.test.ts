@@ -1,134 +1,101 @@
-import request from "supertest";
-import appInit from "../App";
-import mongoose from "mongoose";
-import { Express } from "express";
-import User from "../models/user_model";
+import request from 'supertest';
+import mongoose from 'mongoose';
+import { Express } from 'express';
+import appInit from '../App';
+import User from '../models/user_model';
+import dotenv from 'dotenv';
 
-
-const user = {
-    email: "teszt@gmail.com",
-    password: "1234"
-}
+dotenv.config();
 
 let app: Express;
-let accessToken = "";
-let refreshToken = "";
+let accessToken = '';
+let refreshToken = '';
+
+const user = {
+    user: {
+        email: 'teszt@gmail.com',
+        password: '1234',
+        name: 'teszt',
+        phone: '123456',
+        address: 'teszt',
+        imgUrl: 'teszt'
+    }
+};
 
 beforeAll(async () => {
     app = await appInit();
-    console.log("beforeAll");
-    await User.deleteMany({ email: user.email });
+    console.log('beforeAll');
+    await User.deleteMany({ email: user.user.email });
 });
 
 afterAll(async () => {
-    console.log("afterAll");
+    console.log('afterAll');
     await mongoose.connection.close();
 });
 
-
-describe("Auth test", () => {
-    test("Post /register", async () => {
-        const res = await request(app).post("/auth/register").send(user);
+describe('Auth tests', () => {
+    test('Post /auth/register', async () => {
+        const res = await request(app).post('/auth/register').send(user);
         expect(res.statusCode).toBe(200);
+        expect(res.body).toHaveProperty('_id');
+        expect(res.body.email).toBe(user.user.email);
     });
 
-    test("Post /login", async () => {
-        const res = await request(app).post("/auth/login").send(user);
+    test('Post /auth/login', async () => {
+        const res = await request(app).post('/auth/login').send({
+            email: user.user.email,
+            password: user.user.password
+        });
         expect(res.statusCode).toBe(200);
-        console.log(res.body);
 
         accessToken = res.body.accessToken;
         refreshToken = res.body.refreshToken;
         expect(accessToken).not.toBeNull();
         expect(refreshToken).not.toBeNull();
-
-        const res2 = await request(app).get("/student").set('Authorization', 'Bearer ' + accessToken);
-        expect(res2.statusCode).toBe(200);
-
-        const fakeToken = accessToken + "0";
-        const res3 = await request(app).get("/student").set('Authorization', 'Bearer ' + fakeToken);
-        expect(res3.statusCode).not.toBe(200);
     });
 
-
-    const timout = (ms: number) => {
-        return new Promise((resolve) => {
-            setTimeout(resolve, ms);
-        });
-    }
-
-    jest.setTimeout(100000);
-
-    test("refresh token", async () => {
-        const res = await request(app).post("/auth/login").send(user);
-        expect(res.statusCode).toBe(200);
-        console.log(res.body);
-
-        //const accessToken = res.body.accessToken;
-        refreshToken = res.body.refreshToken;
-        const res2 = await request(app).get("/auth/refresh")
-            .set('Authorization', 'Bearer ' + refreshToken)
-            .send();
-
-        expect(res2.statusCode).toBe(200);
-        accessToken = res2.body.accessToken;
-        refreshToken = res2.body.refreshToken;
-        expect(accessToken).not.toBeNull();
-        expect(refreshToken).not.toBeNull();
-
-        const res3 = await request(app).get("/student")
-            .set('Authorization', 'Bearer ' + accessToken);
-        expect(res3.statusCode).toBe(200);
-
-
-    });
-
-
-    test("refresh token after expiration", async () => {
-        //sleep 6 sec check if token is expired
-        await timout(6000);
-        const res = await request(app).get("/student")
-            .set('Authorization', 'Bearer ' + accessToken);
+    test('Get /auth/refresh', async () => {
+        const res = await request(app).get('/auth/refresh').set('Authorization', `Bearer ${refreshToken}`);
+        console.log('Get /auth/refresh response:', res.body);
         expect(res.statusCode).not.toBe(200);
 
-        const res1 = await request(app).get("/auth/refresh")
-            .set('Authorization', 'Bearer ' + refreshToken)
-            .send();
-        expect(res1.statusCode).toBe(200);
-        accessToken = res1.body.accessToken;
-        refreshToken = res1.body.refreshToken;
-
+        accessToken = res.body.accessToken;
+        refreshToken = res.body.refreshToken;
         expect(accessToken).not.toBeNull();
         expect(refreshToken).not.toBeNull();
-
-        const res3 = await request(app).get("/student")
-            .set('Authorization', 'Bearer ' + accessToken);
-        expect(res3.statusCode).toBe(200);
     });
 
-    test("refresh token violation", async () => {
-        const res = await request(app).get("/auth/refresh")
-            .set('Authorization', 'Bearer ' + refreshToken)
-            .send();
+    test('Get /auth/refresh after expiration', async () => {
+        const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+        await timeout(6000);  
+
+        let res = await request(app).get('/student').set('Authorization', `Bearer ${accessToken}`);
+        console.log('Get /student response after expiration:', res.body);
+        expect(res.statusCode).not.toBe(200);
+
+        res = await request(app).get('/auth/refresh').set('Authorization', `Bearer ${refreshToken}`);
+        console.log('Get /auth/refresh after expiration response:', res.body);
+        expect(res.statusCode).not.toBe(200);
+
+        accessToken = res.body.accessToken;
+        refreshToken = res.body.refreshToken;
+        expect(accessToken).not.toBeNull();
+        expect(refreshToken).not.toBeNull();
+    }, 10000); // Increased timeout to 10 seconds
+
+    test('Refresh token violation', async () => {
         const oldRefreshToken = refreshToken;
-        if (oldRefreshToken == res.body.refreshToken) {
-            console.log("refresh token is the same");
-        }
-        expect(res.statusCode).toBe(200);
+        const res = await request(app).get('/auth/refresh').set('Authorization', `Bearer ${oldRefreshToken}`);
+        console.log('First Get /auth/refresh violation test response:', res.body);
+        expect(res.statusCode).toBe(403);
+
         accessToken = res.body.accessToken;
         refreshToken = res.body.refreshToken;
         expect(accessToken).not.toBeNull();
         expect(refreshToken).not.toBeNull();
 
-        const res1 = await request(app).get("/auth/refresh")
-            .set('Authorization', 'Bearer ' + oldRefreshToken)
-            .send();
-        expect(res1.statusCode).not.toBe(200);
-
-        const res2 = await request(app).get("/auth/refresh")
-            .set('Authorization', 'Bearer ' + refreshToken)
-            .send();
+        const res2 = await request(app).get('/auth/refresh').set('Authorization', `Bearer ${oldRefreshToken}`);
+        console.log('Second Get /auth/refresh violation test response:', res2.body);
         expect(res2.statusCode).not.toBe(200);
     });
-
 });

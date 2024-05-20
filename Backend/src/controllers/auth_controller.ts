@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import User from "../models/user_model";
+import User  from "../models/user_model";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { OAuth2Client } from "google-auth-library";
@@ -61,6 +61,7 @@ const generateTokens = (userId: string): { accessToken: string, refreshToken: st
         refreshToken: refreshToken
     }
 }
+
 const login = async (req: Request, res: Response) => {
     console.log("login");
 
@@ -77,8 +78,7 @@ const login = async (req: Request, res: Response) => {
         if (user == null) {
             return res.status(400).send("invalid email");
         }
-        console.log(user.password);
-        console.log(password)
+        
         const valid = await bcrypt.compare(password, user.password);
         console.log(valid);
         if (!valid) {
@@ -103,8 +103,28 @@ const login = async (req: Request, res: Response) => {
     }
 }
 
-const logout = (req: Request, res: Response) => {
-    res.status(400).send("logout");
+const logout = async (req: Request, res: Response) => {
+    const authHeader = req.headers['authorization'];
+    const refreshToken = authHeader && authHeader.split(' ')[1]; // Bearer <token>
+    if (refreshToken == null) return res.sendStatus(401);
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, user: { '_id': string }) => {
+        console.log(err);
+        if (err) return res.sendStatus(401);
+        try {
+            const userDb = await User.findOne({ '_id': user._id });
+            if (!userDb.tokens || !userDb.tokens.includes(refreshToken)) {
+                userDb.tokens = [];
+                await userDb.save();
+                return res.sendStatus(401);
+            } else {
+                userDb.tokens = userDb.tokens.filter(t => t !== refreshToken);
+                await userDb.save();
+                return res.sendStatus(200);
+            }
+        } catch (err) {
+            res.sendStatus(401).send(err.message);
+        }
+    });
 }
 
 const refresh = async (req: Request, res: Response) => {
@@ -152,44 +172,37 @@ const refresh = async (req: Request, res: Response) => {
     });
 }
 const googleSignIn = async (req: Request, res: Response) => {
-    try{
+    console.log(req.body);
+    try {
         const ticket = await client.verifyIdToken({
-        idToken: req.body.credentialResponse,
-        audience: process.env.GOOGLE_CLIENT_ID
-    });
-    const payload = ticket.getPayload();
-    const email = payload?.email;
-    if(email != null){
-        let user = await User.findOne({'email': email});
-            if(user == null){
-                user = await User.create({
-                    email: email,
-                    imgUrl: payload?.picture,
-                    name: payload?.name
-                });
+            idToken: req.body.credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        const email = payload?.email;
+        if (email != null) {
+            let user = await User.findOne({ 'email': email });
+            if (user == null) {
+                user = await User.create(
+                    {
+                        'email': email,
+                        'password': '0',
+                        'imgUrl': payload?.picture
+                    });
             }
-            const { accessToken, refreshToken } = generateTokens(user._id.toString());
-            if (user.tokens == null){
-                user.tokens = [refreshToken];
-            }else {
-                user.tokens.push(refreshToken);
-            }
-            await user.save();
-
-            return res.status(200).send({
-                accessToken: accessToken,
-                refreshToken: refreshToken,
-                email: email,
-                _id: user._id,
-                imgUrl: user.imgUrl,
-            });
+            const tokens = await generateTokens(user._id.toString())
+            res.status(200).send(
+                {
+                    email: user.email,
+                    _id: user._id,
+                    imgUrl: user.imgUrl,
+                    ...tokens
+                })
         }
-
-    }catch (error){
-        return res.status(400).send(error.message);
+    } catch (err) {
+        return res.status(400).send(err.message);
     }
-   
-    
+
 }
 
 export default {

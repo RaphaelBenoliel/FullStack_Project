@@ -6,10 +6,11 @@
   "scripts": {
     "start": "cp .env_dev .env && tsc && node dist/src/Server.js",
     "dev": "cp .env_dev .env && nodemon ./src/Server.ts",
-    "test": "cp .env_test .env && jest --detectOpenHandles --forceExit",
-    "testStudent": "cp .env_test .env && jest --detectOpenHandles --forceExit ./src/tests/student.test.ts",
+    "test": "cp .env_test .env && jest --detectOpenHandles --coverage --forceExit",
     "testAuth": "cp .env_test .env && jest --detectOpenHandles --forceExit --runInBand ./src/tests/auth.test.ts",
+    "testUser": "cp .env_test .env && jest --detectOpenHandles --forceExit --runInBand ./src/tests/user.test.ts",
     "testPost": "cp .env_test .env && jest --detectOpenHandles --forceExit ./src/tests/post.test.ts",
+    "testFile": "cp .env_test .env && jest --detectOpenHandles --forceExit ./src/tests/file.test.ts",
     "lint": "eslint . --ext .ts"
   },
   "author": "Raphael Benoliel",

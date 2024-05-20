@@ -71,7 +71,7 @@ router.put("/:id", UserController.put.bind(UserController));
 
 // router.put("/:id", authMiddleware, studentController.put.bind(studentController));
 
-// router.delete("/:id", authMiddleware, studentController.remove.bind(studentController));
+router.delete("/:id", authMiddleware, UserController.remove.bind(UserController));
 
 export default router;
 

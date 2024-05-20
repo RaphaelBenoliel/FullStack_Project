@@ -129,7 +129,7 @@ const openCamera = async () => {
 
       <View style={styles.buttons}>
         <TouchableOpacity style={styles.button} onPress={onSave}>
-          <Text style={styles.buttonText}>Save</Text>
+          <Text style={styles.buttonText}>Post</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={onCancel}>
           <Text style={styles.buttonText}>Cancel</Text>

@@ -49,7 +49,7 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
     const onSave = async () => {
         
          // Provide a default value of an empty string if user?.email is undefined
-        const validationResult: ValidationResult = validateInputs(email, password, name, phone, address);
+        const validationResult: ValidationResult = validateInputs(email, "123456", name, phone, address);
         console.log('Validation result:', validationResult);
         if (!validationResult.isValid) {
           setErrors(validationResult.errors);

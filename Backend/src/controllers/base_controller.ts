@@ -69,6 +69,7 @@ class BaseController<ModelType> {
         console.log(req.params);
         try {
             const item = await this.itemModel.findByIdAndUpdate(req.params.id, req.body );
+            // console.log("item: ", item);
             if (!item) {
                 return res.status(404).send("not found");
             } else {
@@ -94,7 +95,7 @@ class BaseController<ModelType> {
     async updateOwnerPosts(req: Request, res: Response) {
         console.log("rebody:  " , req.body);
 
-        const ownerId = req.body.owner; // Assuming you pass ownerId as a parameter
+        const ownerId = req.body.owner; // owner id
 
         try {
             // Find all posts belonging to the owner
