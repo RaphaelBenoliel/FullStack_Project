@@ -64,7 +64,6 @@ const generateTokens = (userId: string): { accessToken: string, refreshToken: st
 
 const login = async (req: Request, res: Response) => {
     console.log("login");
-
     const email = req.body.email;
     const password = req.body.password;
 
@@ -106,7 +105,13 @@ const login = async (req: Request, res: Response) => {
 const logout = async (req: Request, res: Response) => {
     const authHeader = req.headers['authorization'];
     const refreshToken = authHeader && authHeader.split(' ')[1]; // Bearer <token>
-    if (refreshToken == null) return res.sendStatus(401);
+    if (refreshToken == null) {
+        const userDb = await User.findOne({ '_id': req.params.id });
+        userDb.tokens = [];
+        await userDb.save();
+        console.log("User logout...");
+        return res.sendStatus(200);
+    }
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, user: { '_id': string }) => {
         console.log(err);
         if (err) return res.sendStatus(401);
@@ -190,7 +195,7 @@ const googleSignIn = async (req: Request, res: Response) => {
                         'imgUrl': payload?.picture
                     });
             }
-            const tokens = await generateTokens(user._id.toString())
+            const tokens = generateTokens(user._id.toString())
             res.status(200).send(
                 {
                     email: user.email,

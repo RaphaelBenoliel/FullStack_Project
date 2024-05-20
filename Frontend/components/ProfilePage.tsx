@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Image, Button, ActivityIndicator } from "react-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserModel, { IUser } from "../model/UserModel";
 import { BASE_URL } from "../config";
+import AuthApi from "../api/AuthApi";
 
 
 const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
@@ -16,6 +17,7 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
                     const token = await AsyncStorage.getItem('token');
                     if (token) {
                         const user = await UserModel.getUser(token);
+                        console.log('User:', user);
                         setUser(user);
                     }
                 } catch (error) {
@@ -50,9 +52,12 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
                 />
             ),
         })
-    }, [navigation])
+    }, [navigation,user])
         
         const onLogout = async () => {
+            console.log('Logout ...User', user);
+            const res = await AuthApi.logout(user?._id);
+            console.log('ressullltttt   ',res);
 
             await AsyncStorage.removeItem('token');
             navigation.reset({

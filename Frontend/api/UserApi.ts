@@ -2,6 +2,7 @@ import { from } from 'form-data';
 import client from './client';
 import axios from 'axios';
 import FormData from 'form-data';
+import { BASE_URL } from '../config';
 
 const getUser = (token: String) => {
     return client.get(`/user/${token}`);
@@ -28,7 +29,7 @@ const uploadImage = async (imageUri: string): Promise<string> => {
 
         console.log("FormData: ", formData);
 
-        const response = await axios.post('http://192.168.1.164:3000/file/upload', formData, {
+        const response = await axios.post(`http://${BASE_URL}:3000/file/upload`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

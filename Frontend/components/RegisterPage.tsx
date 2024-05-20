@@ -58,6 +58,7 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
                 Alert.alert(String(response.data));
             }
             if (response.status === 200) {
+                Alert.alert("Registered successfully");
                 navigation.navigate('LoginPage');
             }
         } catch (error) {

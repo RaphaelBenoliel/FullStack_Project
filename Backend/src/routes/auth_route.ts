@@ -151,7 +151,7 @@ router.post("/login", authController.login);
 *       200:
 *         description: logout completed successfully
 */
-router.get("/logout", authController.logout);
+router.get("/logout/:id", authController.logout);
 
 /**
 * @swagger

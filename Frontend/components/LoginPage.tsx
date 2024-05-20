@@ -1,8 +1,12 @@
 import { StyleSheet, View, TextInput, Text, TouchableOpacity, Alert, Image,ActivityIndicator, StatusBar } from "react-native";
 import React, { FC, useState,useEffect } from "react";
 import AuthApi from "../api/AuthApi";
-import GoogleSignIn from "./GoogleSignIn";
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import GoogleSignIn from "./GoogleSignIn";
+// import { CredentialResponse, GoogleLogin } from '@react-oauth/google'
+// import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+
 
 const LoginPage: FC<{ navigation: any }> = ({ navigation }) => {
   const [email, onChangeEmail] = useState('');
@@ -63,7 +67,19 @@ const LoginPage: FC<{ navigation: any }> = ({ navigation }) => {
       }, 2000); // 2 seconds delay
     }
   };
+//   const onGoogleLoginSuccess = async (credentialResponse: CredentialResponse) => {
+//     console.log(credentialResponse)
+//     try {
+//         const res = await AuthApi.SignInWithGoogle(credentialResponse)
+//         console.log(res)
+//     } catch (e) {
+//         console.log(e)
+//     }
+// }
 
+// const onGoogleLoginFailure = () => {
+//     console.log("Google login failed")
+// }
   return (
     
     <View style={styles.container}>
@@ -96,6 +112,9 @@ const LoginPage: FC<{ navigation: any }> = ({ navigation }) => {
       <TouchableOpacity onPress={() => navigation.navigate('RegisterPage')}>
         <Text style={styles.signup}>SIGN UP</Text>
       </TouchableOpacity>
+     
+
+      {/* <GoogleLogin onSuccess={onGoogleLoginSuccess} onError={onGoogleLoginFailure} /> */}
       <GoogleSignIn />
     </View>
     
