@@ -25,7 +25,6 @@ class BaseController<ModelType> {
     }
     async getUser(req: Request, res: Response) {
         try {
-            console.log('reqqqqqqqqqq', req.params.token);
           const user = await this.itemModel.findOne({ tokens: req.params.token });
           if (!user) {
             return res.status(404).send("token user not found");
@@ -39,7 +38,7 @@ class BaseController<ModelType> {
       }
 
     async getById(req: Request, res: Response) {
-        console.log(req.params);
+        console.log("getById");
         try {
             const item = await this.itemModel.findById(req.params.id);
             if (!item) {
@@ -66,7 +65,6 @@ class BaseController<ModelType> {
     
     async put(req: Request, res: Response) {
         console.log("put");
-        console.log(req.params);
         try {
             const item = await this.itemModel.findByIdAndUpdate(req.params.id, req.body );
             // console.log("item: ", item);
@@ -93,7 +91,6 @@ class BaseController<ModelType> {
         }
     }
     async updateOwnerPosts(req: Request, res: Response) {
-        console.log("rebody:  " , req.body);
 
         const ownerId = req.body.owner; // owner id
 

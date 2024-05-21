@@ -67,8 +67,11 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
             };
     return (
         <View style={styles.container}>
-            {loading && <ActivityIndicator size="large" color="#00ff00" style={styles.loadingIndicator} />} 
-                 {user?.imgUrl === "" && (
+           {loading && 
+                <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#00ff00" style={styles.loadingIndicator} />
+                </View>} 
+        {user?.imgUrl === "" && (
           <Image
             style={styles.avatar}
             source={require("../assets/avatar.png")}
@@ -141,6 +144,14 @@ const styles = StyleSheet.create({
         top: '50%',
         left: '50%',
         zIndex: 1000,
+      },
+      loadingContainer: {
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000,
+        elevation: 1000,
+        backgroundColor: 'rgba(0,0,0,0.7)',
       },
 });
 

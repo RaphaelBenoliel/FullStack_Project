@@ -106,7 +106,10 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
       };
     return (
         <View style={styles.container}>
-          {loading && <ActivityIndicator size="large" color="#00ff00" style={styles.loadingIndicator} />} 
+          {loading && 
+            <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#00ff00" style={styles.loadingIndicator} />
+            </View>} 
             <StatusBar backgroundColor="#0d1117" barStyle="light-content"/>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
             {/* <Image style={styles.avatar} source={require('../assets/ES-Network.png')} /> */}
@@ -263,6 +266,14 @@ const styles = StyleSheet.create({
         top: '50%',
         left: '50%',
         zIndex: 1000,
+      },
+      loadingContainer: {
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1000,
+        elevation: 1000,
+        backgroundColor: 'rgba(0,0,0,0.7)',
       },
 });
 

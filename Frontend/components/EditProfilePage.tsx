@@ -23,7 +23,7 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
   
     useEffect(() => {
         const getUserInfo = async () => {
-          setLoading(true);
+          // setLoading(true);
           try {
             const token = await AsyncStorage.getItem('token');
             if (token) {
@@ -111,7 +111,10 @@ const EditProfilePage: FC<{ navigation: any}> = ({ navigation}) => {
     };
     return (
       <View style={styles.container}>
-        {loading && <ActivityIndicator size="large" color="#00ff00" style={styles.loadingIndicator} />} 
+        {loading && 
+          <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#00ff00" style={styles.loadingIndicator} />
+          </View>} 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
            <View>
            
@@ -246,7 +249,16 @@ loadingIndicator: {
   left: '50%',
   zIndex: 1000,
 },
+loadingContainer: {
+  ...StyleSheet.absoluteFillObject,
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 1000,
+  elevation: 1000,
+  backgroundColor: 'rgba(0,0,0,0.7)',
+},
 });
+
 
 
 export default EditProfilePage;
