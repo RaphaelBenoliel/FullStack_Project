@@ -57,7 +57,7 @@ const MyPostPage: FC<{ navigation: any }> = ({ navigation }) => {
             headerRight: () => (
                 <Button
                     onPress={() => navigation.navigate('PostAddPage')}
-                    title="Add Post"
+                    title="ADD POST"
                     color={'#372245ee'}
                 />
             ),

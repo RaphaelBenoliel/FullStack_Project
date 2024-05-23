@@ -47,7 +47,7 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
                 <Button
                     onPress={() => onLogout()}
                     title="LOGOUT"
-                    color={'#372245ee'}
+                    color={'#c51d1ded'}
                     
                 />
             ),

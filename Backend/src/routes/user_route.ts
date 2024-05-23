@@ -30,7 +30,7 @@ import authMiddleware from "../common/auth_middleware"; // Add this line to impo
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get("/", UserController.get.bind(UserController));
+router.get("/",authMiddleware, UserController.get.bind(UserController));
 router.get("/:token", UserController.getUser.bind(UserController));
 
 /**

@@ -43,19 +43,21 @@ const register = async (req: Request, res: Response) => {
     }
 }
 
-
 const generateTokens = (userId: string): { accessToken: string, refreshToken: string } => {
-    const accessToken = jwt.sign(
-        { _id: userId },
-        process.env.TOKEN_SECRET || "defaultSecret", // Use default secret if process.env.TOKEN_SECRET is undefined
-        { expiresIn: process.env.TOKEN_EXPIRATION }
-    );
+    console.log('Generating tokens with secrets:');
+    console.log('TOKEN_SECRET:', process.env.TOKEN_SECRET);
+    console.log('REFRESH_TOKEN_SECRET:', process.env.REFRESH_TOKEN_SECRET);
+    console.log('TOKEN_EXPIRATION:', process.env.TOKEN_EXPIRATION);
+    const accessToken = jwt.sign({
+        _id: userId
+    }, process.env.TOKEN_SECRET, {
+        expiresIn: process.env.TOKEN_EXPIRATION
+    });
 
-    const refreshToken = jwt.sign(
-        { _id: userId, salt: Math.random() },
-        process.env.REFRESH_TOKEN_SECRET || "defaultRefreshSecret" // Use default secret if process.env.REFRESH_TOKEN_SECRET is undefined
-    );
-
+    const refreshToken = jwt.sign({
+        _id: userId,
+        salt: Math.random()
+    }, process.env.REFRESH_TOKEN_SECRET);
     return {
         accessToken: accessToken,
         refreshToken: refreshToken
@@ -70,20 +72,18 @@ const login = async (req: Request, res: Response) => {
     if (email == null || password == null) {
         return res.status(400).send("missing email or password");
     }
-
     try {
         const user = await User.findOne({ email: email });
 
         if (user == null) {
             return res.status(400).send("invalid email");
         }
-        
         const valid = await bcrypt.compare(password, user.password);
         console.log(valid);
         if (!valid) {
             return res.status(400).send("invalid password");
         }
-
+        console.log("User login...", user._id.toString());
         const { accessToken, refreshToken } = generateTokens(user._id.toString());
 
         if (user.tokens == null) {
