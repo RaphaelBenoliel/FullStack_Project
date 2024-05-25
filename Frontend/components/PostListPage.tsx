@@ -9,13 +9,10 @@ const PostListPage: FC<{ navigation: any }> = ({ navigation }) => {
     const [data, setData] = useState<Post[]>([]);
     const [loading, setLoading] = useState(false);
 
-
-    const onPostSelected = (name: string, id: string) => {
-        console.log('Item selected: ' + name);
-        // You can navigate to another page or show post details here
+    const onPostSelected = (post: Post) => {
+        navigation.navigate('PostViewPage', { post });
     }
   
-
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', async () => {
             setLoading(true); 
@@ -63,7 +60,7 @@ const PostListPage: FC<{ navigation: any }> = ({ navigation }) => {
                 renderItem={({item}) => 
                     <PostListRow 
                         post={item}
-                        onPostSelected={(post: Post) => onPostSelected(post.owner.name, post._id)}
+                        onPostSelected={(post: Post) => onPostSelected(item)}
                     />
                 }
             />

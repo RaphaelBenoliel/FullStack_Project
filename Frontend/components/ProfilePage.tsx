@@ -17,7 +17,6 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
                     const token = await AsyncStorage.getItem('token');
                     if (token) {
                         const user = await UserModel.getUser(token);
-                        console.log('User:', user);
                         setUser(user);
                     }
                 } catch (error) {
@@ -55,11 +54,9 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
     }, [navigation,user])
         
         const onLogout = async () => {
-            console.log('Logout ...User', user);
             const res = await AuthApi.logout(user?._id);
-            console.log('ressullltttt   ',res);
-
             await AsyncStorage.removeItem('token');
+            console.log('Logout ... user id:', user?._id);  
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'LoginPage' }], 

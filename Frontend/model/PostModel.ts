@@ -18,7 +18,6 @@ const getPosts = async () => {
 
 const createPost = async (post: Post) => {
     const response:any = await PostApi.createPost(post);
-    console.log('response:', response);
     if (!response.ok) {
         console.log(response.data);
         throw new Error(response.data);

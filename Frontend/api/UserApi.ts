@@ -14,7 +14,7 @@ import { BASE_URL } from '../config';
 // };
 
 const getUser = (token: String) => {
-    return client.get(`/user/${token}`);
+    return client.get(`/user/get/${token}`);
     };
 
 const updateUser = (token: string,  _id: string,updateFields:any) => {
@@ -37,8 +37,7 @@ const uploadImage = async (imageUri: string): Promise<string> => {
             name: filename,
         } as any); // Add `as any` to avoid type issues
 
-        console.log("FormData: ", formData);
-
+    
         const response = await axios.post(`http://${BASE_URL}:3000/file/upload`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',

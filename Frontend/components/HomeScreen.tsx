@@ -8,6 +8,7 @@ import PostEditPage from './PostEditPage';
 import ProfilePage from './ProfilePage';
 import EditProfilePage from './EditProfilePage';
 import MyPostPage from './MyPostPage';
+import PostViewPage from './PostViewPage';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Tab = createBottomTabNavigator();
@@ -61,13 +62,26 @@ const PostListScreens : FC = () => {
       <PostListScreenStack.Screen
         name="All Posts"
         component={PostListPage}
-        options={{ headerShown: true }}
+        options={{
+          headerShown: true,
+          title: 'EQUAL NETWORK',
+          headerTitleStyle: {
+            fontSize: 14,
+            fontWeight: 'bold',
+            color: '#FFFFFF',
+          },
+        }}
       />
        <PostListScreenStack.Screen
         name="PostAddPage"
         component={PostAddPage}
         options={{ title: 'Add New Post', headerShown: true}}
       />
+      <PostListScreenStack.Screen
+        name="PostViewPage"
+        component={PostViewPage}
+        options={{ headerShown: true , title: 'Post Details'}}
+        />
     </PostListScreenStack.Navigator>
   );
 };
@@ -89,7 +103,15 @@ const MyPostScreens : FC = () => {
       <MyPostScreenStack.Screen
         name="MyPostPage"
         component={MyPostPage}
-        options={{ headerShown: true, title: 'My Posts'}}
+        options={{
+          headerShown: true,
+          title: 'EQUAL NETWORK',
+          headerTitleStyle: {
+            fontSize: 14,
+            fontWeight: 'bold',
+            color: '#FFFFFF',
+          },
+        }}
       />
       <MyPostScreenStack.Screen
         name="PostDetailsPage"

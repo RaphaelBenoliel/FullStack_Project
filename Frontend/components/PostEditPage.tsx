@@ -7,6 +7,7 @@ import {
   Image,
   StyleSheet,
   ScrollView,
+  Alert,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -78,6 +79,12 @@ const PostEditPage: FC<{ route: any, navigation: any }> = ({ route, navigation }
   };
 
   const onSave = async () => {
+    if(comment === '' && commentUrl === '') {
+      Alert.alert('Empty Post',
+      'You cannot save an empty post. Please add a comment or an image.');
+      return;
+    }
+
     if (user && (comment !== postEdit.comment || commentUrl !== originalCommentUrl)) {
       const post: Post = {
         ...postEdit,
@@ -93,7 +100,7 @@ const PostEditPage: FC<{ route: any, navigation: any }> = ({ route, navigation }
       try {
         if (commentUrl !== originalCommentUrl && commentUrl !== postEdit.commentUrl) {
           const url = await UserApi.uploadImage(commentUrl);
-          post.commentUrl = url;
+          post.commentUrl = url.replace( BASE_URL,'localhost');
         }
 
         await PostModel.updatePost(post);

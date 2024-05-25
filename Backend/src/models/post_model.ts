@@ -10,7 +10,7 @@ const postSchema = new mongoose.Schema<IPost>({
    
     comment: {
         type: String,
-        required: true,
+        
     },
     commentUrl: {
         type: String,

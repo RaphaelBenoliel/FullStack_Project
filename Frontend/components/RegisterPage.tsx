@@ -53,7 +53,6 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
                 return;
               }
             const response = await AuthApi.register(user);
-            console.log('Response:', response);
             if (response.status === 400) {
                 Alert.alert(String(response.data));
             }
@@ -113,19 +112,15 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
             <StatusBar backgroundColor="#0d1117" barStyle="light-content"/>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
             {/* <Image style={styles.avatar} source={require('../assets/ES-Network.png')} /> */}
-            <Text style={styles.title}>ES-Network</Text>
+            
             <View>
-        {/* {imgUri === "" && (
+        {imgUri === "" && (
           <Image
             style={styles.avatar}
-            source={require("../assets/avatar.png")}
+            source={require("../assets/ES-Network.png")}
           />
-        )} */}
-        {imgUri !== "" && (
-          <Image style={styles.avatar} source={{ uri: imgUri }} />
         )}
-
-       
+        <Text style={styles.title}>Equal Network</Text>
       </View>
             <TextInput 
                 style={styles.input}
@@ -168,6 +163,9 @@ const RegisterPage: FC<{ navigation: any }> = ({ navigation }) => {
                 placeholderTextColor={'#aea5a5'}
             />
             {errors.address ? <Text style={styles.error}>{errors.address}</Text> : null}
+            {imgUri !== "" && (
+          <Image style={styles.avatar} source={{ uri: imgUri }} />
+        )}
              <TouchableOpacity onPress={openCamera}>
           <Ionicons name={"camera"} style={styles.cameraButton} size={50} />
         </TouchableOpacity>
@@ -196,12 +194,16 @@ const styles = StyleSheet.create({
         backgroundColor: '#0d1117',
     },
     title: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        
-        alignSelf: 'center',
-        color: 'white',
-        marginTop: 10,
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#FFFFFF',
+      textAlign: 'center',
+      marginVertical: 10,
+      textTransform: 'uppercase',
+      letterSpacing: 3,
+      textShadowColor: 'rgba(0, 0, 0, 0.75)',
+      textShadowOffset: { width: 2, height: 2 },
+      textShadowRadius: 10,
     },
     input: {
       height: 40,

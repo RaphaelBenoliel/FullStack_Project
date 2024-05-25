@@ -89,7 +89,7 @@ const LoginPage: FC<{ navigation: any }> = ({ navigation }) => {
           </View>} 
       <StatusBar backgroundColor="#0d1117" barStyle="light-content"/>
       <Image style={styles.avatar} source={require('../assets/ES-Network.png')} />
-      <Text style={styles.title}>ES-Network</Text>
+      <Text style={styles.title}>Equal Network</Text>
       
       <TextInput
         style={styles.input}
@@ -130,11 +130,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#0d1117',
   },
   title: {
-    fontSize: 30,
+    fontSize: 16,
     fontWeight: 'bold',
-    alignSelf: 'center',
-    color: 'white',
-    marginTop: 10,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    marginVertical: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 3,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 10,
   },
   input: {
     height: 40,

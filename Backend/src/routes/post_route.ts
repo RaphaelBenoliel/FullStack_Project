@@ -52,13 +52,37 @@ import postController from "../controllers/post_controller";
  */
 
 
-
+/**
+ * @swagger
+ * /post:
+ *   post:
+ *     summary: Create a new post
+ *     tags: [PostRoute]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Post'
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: The post was successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Post'
+ */
+router.post("/", postController.post.bind(postController));
 /**
  * @swagger
  * /post:
  *  get:
  *    summary: Get all posts
  *    tags: [PostRoute]
+ *    security:
+ *     - bearerAuth: []
  *    responses:
  *      200:
  *        description: The list of posts
@@ -84,6 +108,8 @@ router.get("/", postController.get.bind(postController));
  *           type: string
  *         required: true
  *         description: The post ID
+ *     security:
+ *      - bearerAuth: []
  *     responses:
  *       200:
  *         description: The post description by id
@@ -95,29 +121,6 @@ router.get("/", postController.get.bind(postController));
  *         description: The post was not found
  */
 router.get("/:id", postController.getById.bind(postController));
-
-
-/**
- * @swagger
- * /post:
- *   post:
- *     summary: Create a new post
- *     tags: [PostRoute]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/Post'
- *     responses:
- *       200:
- *         description: The post was successfully created
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Post'
- */
-router.post("/", postController.post.bind(postController));
 
 /**
  * @swagger
@@ -138,6 +141,8 @@ router.post("/", postController.post.bind(postController));
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Post'
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: The post was updated
@@ -162,6 +167,8 @@ router.put("/:id", postController.put.bind(postController));
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/Post'
+ *     security:
+ *      - bearerAuth: []
  *     responses:
  *       200:
  *         description: The post was updated
@@ -185,6 +192,8 @@ router.put("/", postController.updateOwnerPosts.bind(postController));
  *           type: string
  *         required: true
  *         description: The post ID
+ *     security:
+ *      - bearerAuth: []
  *     responses:
  *       200:
  *         description: The post was deleted

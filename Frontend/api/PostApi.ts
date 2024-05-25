@@ -10,7 +10,6 @@ const getPostsUser = (_id: string) => {
 }
 
 const updatePostsOwner = (owner: any) => {
-    console.log('owner:', owner);
     return client.put('/post/', { owner });
 }
 

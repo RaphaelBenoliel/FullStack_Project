@@ -91,11 +91,17 @@ const openCamera = async () => {
           post.commentUrl = url;
           console.log("url: " + post.commentUrl);
       }
-      if (comment === '') {
-        Alert.alert('Please enter a comment');
+      if (comment === '' && commentUrl === '') {
+        Alert.alert(
+          'Empty Post!',
+          'Please enter a comment or select an image.\nYou cannot post an empty post.'
+        );
         return;
       }
       const res = await PostModel.createPost(post);
+      if (res) {
+        Alert.alert('Post created successfully');
+      }
       navigation.navigate('All Posts');
     } catch (error) {
       console.error('Error:', error);

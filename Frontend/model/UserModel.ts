@@ -33,13 +33,10 @@ export const updateUser = async (token: any, _id: any, updateFields: any) => {
     const response:any = await UserApi.updateUser(token, _id, updateFields);
     try {
       const resposts:any = await PostApi.updatePostsOwner({_id, name: updateFields.name, imgUrl: updateFields.imgUrl});
-      console.log('resposts:', resposts);
-
-        
+  
     } catch (error) {
         console.error('Error:', error);
     }
-    
     
     if (response.status == 200) {
         return response.data;

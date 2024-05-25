@@ -1,9 +1,8 @@
 import express from "express";
 const router = express.Router();
 import UserController from "../controllers/user_controller";
-import authMiddleware from "../common/auth_middleware"; // Add this line to import the authMiddleware module
-
 // import authMiddleware from "../common/auth_middleware";
+
 
 
 /**
@@ -20,6 +19,8 @@ import authMiddleware from "../common/auth_middleware"; // Add this line to impo
  *   get:
  *     summary: Get all users
  *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: The list of users
@@ -31,7 +32,35 @@ import authMiddleware from "../common/auth_middleware"; // Add this line to impo
  *                 $ref: '#/components/schemas/User'
  */
 router.get("/", UserController.get.bind(UserController));
-router.get("/:token", UserController.getUser.bind(UserController));
+/**
+ * @swagger
+ * /user/{id}:
+ *   get:
+ *     summary: Get a user by ID
+ *     tags: [User]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The user ID
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: The user description by id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: The user was not found
+ * description: The user was not found
+ * 
+ */
+router.get("/:id",  UserController.getById.bind(UserController));
+router.get("/get/:token", UserController.getUser.bind(UserController));
 
 /**
  * @swagger
@@ -52,6 +81,8 @@ router.get("/:token", UserController.getUser.bind(UserController));
  *         application/json:
  *           schema:
  *             $ref: '#/components/schemas/User'
+ *     security:
+ *      - bearerAuth: []
  *     responses:
  *       200:
  *         description: The updated user
@@ -65,13 +96,7 @@ router.get("/:token", UserController.getUser.bind(UserController));
  *         description: Some server error
  */
 router.put("/:id", UserController.put.bind(UserController));
-// router.get("/:id", authMiddleware, studentController.getById.bind(studentController));
 
-// router.post("/", authMiddleware, studentController.post.bind(studentController));
-
-// router.put("/:id", authMiddleware, studentController.put.bind(studentController));
-
-router.delete("/:id", authMiddleware, UserController.remove.bind(UserController));
 
 export default router;
 

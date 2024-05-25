@@ -4,25 +4,12 @@ import PostModel from '../model/PostModel';
 import { BASE_URL } from '../config';
 
 const PostDetailsPage: FC<{ route: any, navigation: any }> = ({ route, navigation }) => {
-    console.log('PostDetailsPage mounted');
     const post = route.params.post;
 
-  //   useEffect(() => {
-  //     navigation.setOptions({
-  //         headerLeft: () => (
-  //             <TouchableOpacity onPress={() => navigation.navigate('My Posts')}>
-  //                 <Ionicons name="arrow-back" size={24} color="white" style={{ marginLeft: 15 }} />
-  //             </TouchableOpacity>
-  //         ),
-  //     });
-  // }, [navigation]);
-
     const onEdit = () => {
-        console.log('Edit post:', post);
         navigation.navigate('PostEditPage', { post: post });
     };
     const onDelete = () => {
-      console.log('Delete post:', post);
       Alert.alert(
         'Delete Post',
         'Are you sure you want to delete this post?',
@@ -44,19 +31,15 @@ const PostDetailsPage: FC<{ route: any, navigation: any }> = ({ route, navigatio
         { cancelable: false }
       );
     }
-
-
     return (
         <View style={styles.container}>
           <View style={styles.commentContainer}>
-         
           <Text style={styles.input}>{post?.comment}</Text>
           {post.commentUrl == '' ? null : (
             <Image style={styles.image}
             source={{ uri: post?.commentUrl.replace('localhost', BASE_URL)}}
             />
           )}
-            
           </View>
             <View style={styles.buttons}>
         <TouchableOpacity style={styles.button} onPress={onEdit}>

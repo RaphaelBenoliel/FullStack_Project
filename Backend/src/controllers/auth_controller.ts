@@ -98,6 +98,7 @@ const login = async (req: Request, res: Response) => {
 }
 
 const logout = async (req: Request, res: Response) => {
+    console.log("logout");
     const authHeader = req.headers['authorization'];
     const refreshToken = authHeader && authHeader.split(' ')[1]; // Bearer <token>
     if (refreshToken == null) {
