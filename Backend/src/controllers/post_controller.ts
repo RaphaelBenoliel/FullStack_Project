@@ -9,7 +9,6 @@ class PostController extends BaseController<IPost> {
     }
 
     async post(req: Request, res: Response) {
-        console.log("reqqqqqq" , req.body);
         super.post(req, res);
     }
    

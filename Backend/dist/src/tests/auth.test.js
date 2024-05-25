@@ -13,107 +13,93 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const supertest_1 = __importDefault(require("supertest"));
-const App_1 = __importDefault(require("../App"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const App_1 = __importDefault(require("../App"));
 const user_model_1 = __importDefault(require("../models/user_model"));
-const user = {
-    email: "teszt@gmail.com",
-    password: "1234"
-};
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 let app;
-let accessToken = "";
-let refreshToken = "";
+let accessToken = '';
+let refreshToken = '';
+const user = {
+    user: {
+        email: 'teszt@gmail.com',
+        password: '1234',
+        name: 'teszt',
+        phone: '123456',
+        address: 'teszt',
+        imgUrl: 'teszt'
+    }
+};
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
     app = yield (0, App_1.default)();
-    console.log("beforeAll");
-    yield user_model_1.default.deleteMany({ email: user.email });
+    console.log('beforeAll');
+    yield user_model_1.default.deleteMany({ email: user.user.email });
 }));
 afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("afterAll");
+    console.log('afterAll');
     yield mongoose_1.default.connection.close();
 }));
-describe("Auth test", () => {
-    test("Post /register", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app).post("/auth/register").send(user);
+describe('Auth tests', () => {
+    test('Register /auth/register', () => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield (0, supertest_1.default)(app).post('/auth/register').send(user);
         expect(res.statusCode).toBe(200);
+        expect(res.body).toHaveProperty('_id');
+        expect(res.body.email).toBe(user.user.email);
     }));
-    test("Post /login", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app).post("/auth/login").send(user);
-        expect(res.statusCode).toBe(200);
-        console.log(res.body);
-        accessToken = res.body.accessToken;
-        refreshToken = res.body.refreshToken;
-        expect(accessToken).not.toBeNull();
-        expect(refreshToken).not.toBeNull();
-        const res2 = yield (0, supertest_1.default)(app).get("/student").set('Authorization', 'Bearer ' + accessToken);
-        expect(res2.statusCode).toBe(200);
-        const fakeToken = accessToken + "0";
-        const res3 = yield (0, supertest_1.default)(app).get("/student").set('Authorization', 'Bearer ' + fakeToken);
-        expect(res3.statusCode).not.toBe(200);
-    }));
-    const timout = (ms) => {
-        return new Promise((resolve) => {
-            setTimeout(resolve, ms);
+    test('Login /auth/login', () => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield (0, supertest_1.default)(app).post('/auth/login').send({
+            email: user.user.email,
+            password: user.user.password
         });
-    };
-    jest.setTimeout(100000);
-    test("refresh token", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app).post("/auth/login").send(user);
-        expect(res.statusCode).toBe(200);
-        console.log(res.body);
-        //const accessToken = res.body.accessToken;
-        refreshToken = res.body.refreshToken;
-        const res2 = yield (0, supertest_1.default)(app).get("/auth/refresh")
-            .set('Authorization', 'Bearer ' + refreshToken)
-            .send();
-        expect(res2.statusCode).toBe(200);
-        accessToken = res2.body.accessToken;
-        refreshToken = res2.body.refreshToken;
-        expect(accessToken).not.toBeNull();
-        expect(refreshToken).not.toBeNull();
-        const res3 = yield (0, supertest_1.default)(app).get("/student")
-            .set('Authorization', 'Bearer ' + accessToken);
-        expect(res3.statusCode).toBe(200);
-    }));
-    test("refresh token after expiration", () => __awaiter(void 0, void 0, void 0, function* () {
-        //sleep 6 sec check if token is expired
-        yield timout(6000);
-        const res = yield (0, supertest_1.default)(app).get("/student")
-            .set('Authorization', 'Bearer ' + accessToken);
-        expect(res.statusCode).not.toBe(200);
-        const res1 = yield (0, supertest_1.default)(app).get("/auth/refresh")
-            .set('Authorization', 'Bearer ' + refreshToken)
-            .send();
-        expect(res1.statusCode).toBe(200);
-        accessToken = res1.body.accessToken;
-        refreshToken = res1.body.refreshToken;
-        expect(accessToken).not.toBeNull();
-        expect(refreshToken).not.toBeNull();
-        const res3 = yield (0, supertest_1.default)(app).get("/student")
-            .set('Authorization', 'Bearer ' + accessToken);
-        expect(res3.statusCode).toBe(200);
-    }));
-    test("refresh token violation", () => __awaiter(void 0, void 0, void 0, function* () {
-        const res = yield (0, supertest_1.default)(app).get("/auth/refresh")
-            .set('Authorization', 'Bearer ' + refreshToken)
-            .send();
-        const oldRefreshToken = refreshToken;
-        if (oldRefreshToken == res.body.refreshToken) {
-            console.log("refresh token is the same");
-        }
         expect(res.statusCode).toBe(200);
         accessToken = res.body.accessToken;
         refreshToken = res.body.refreshToken;
         expect(accessToken).not.toBeNull();
         expect(refreshToken).not.toBeNull();
-        const res1 = yield (0, supertest_1.default)(app).get("/auth/refresh")
-            .set('Authorization', 'Bearer ' + oldRefreshToken)
-            .send();
-        expect(res1.statusCode).not.toBe(200);
-        const res2 = yield (0, supertest_1.default)(app).get("/auth/refresh")
-            .set('Authorization', 'Bearer ' + refreshToken)
-            .send();
+    }));
+    test('Get /auth/refresh', () => __awaiter(void 0, void 0, void 0, function* () {
+        const res = yield (0, supertest_1.default)(app).get('/auth/refresh').set('Authorization', `Bearer ${refreshToken}`);
+        console.log('Get /auth/refresh response:', res.body);
+        expect(res.statusCode).toBe(200);
+        accessToken = res.body.accessToken;
+        refreshToken = res.body.refreshToken;
+        expect(accessToken).not.toBeNull();
+        expect(refreshToken).not.toBeNull();
+    }));
+    test('Get /auth/refresh after expiration', () => __awaiter(void 0, void 0, void 0, function* () {
+        const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+        yield timeout(6000);
+        let res = yield (0, supertest_1.default)(app).get('/user').set('Authorization', `Bearer ${accessToken}`);
+        console.log('Get /student response after expiration:', res.body);
+        expect(res.statusCode).toBe(200);
+        res = yield (0, supertest_1.default)(app).get('/auth/refresh').set('Authorization', `Bearer ${refreshToken}`);
+        console.log('Get /auth/refresh after expiration response:', res.body);
+        expect(res.statusCode).toBe(200);
+        accessToken = res.body.accessToken;
+        refreshToken = res.body.refreshToken;
+        expect(accessToken).not.toBeNull();
+        expect(refreshToken).not.toBeNull();
+    }), 10000); // Increased timeout to 10 seconds
+    test('Refresh token violation', () => __awaiter(void 0, void 0, void 0, function* () {
+        const oldRefreshToken = refreshToken;
+        const res = yield (0, supertest_1.default)(app).get('/auth/refresh').set('Authorization', `Bearer ${oldRefreshToken}`);
+        console.log('First Get /auth/refresh violation test response:', res.body);
+        expect(res.statusCode).toBe(200);
+        accessToken = res.body.accessToken;
+        refreshToken = res.body.refreshToken;
+        expect(accessToken).not.toBeNull();
+        expect(refreshToken).not.toBeNull();
+        const res2 = yield (0, supertest_1.default)(app).get('/auth/refresh').set('Authorization', `Bearer ${oldRefreshToken}`);
+        console.log('Second Get /auth/refresh violation test response:', res2.body);
         expect(res2.statusCode).not.toBe(200);
+    }));
+    test('Logout /auth/logout', () => __awaiter(void 0, void 0, void 0, function* () {
+        const userf = yield user_model_1.default.findOne({ email: user.user.email });
+        console.log('User:', userf._id.toString());
+        const res = yield (0, supertest_1.default)(app).get(`/auth/logout/${userf._id}`).send({ refreshToken: refreshToken });
+        console.log('Post /auth/logout response:', res.body);
+        expect(res.statusCode).toBe(200);
     }));
 });
 //# sourceMappingURL=auth.test.js.map

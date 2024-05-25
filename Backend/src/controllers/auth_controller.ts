@@ -7,7 +7,6 @@ import { OAuth2Client } from "google-auth-library";
 const client = new OAuth2Client();
 
 const register = async (req: Request, res: Response) => {
-    console.log(req.body);
     const email = req.body.user.email;
     const password = req.body.user.password;
     const name = req.body.user.name;
@@ -44,10 +43,6 @@ const register = async (req: Request, res: Response) => {
 }
 
 const generateTokens = (userId: string): { accessToken: string, refreshToken: string } => {
-    console.log('Generating tokens with secrets:');
-    console.log('TOKEN_SECRET:', process.env.TOKEN_SECRET);
-    console.log('REFRESH_TOKEN_SECRET:', process.env.REFRESH_TOKEN_SECRET);
-    console.log('TOKEN_EXPIRATION:', process.env.TOKEN_EXPIRATION);
     const accessToken = jwt.sign({
         _id: userId
     }, process.env.TOKEN_SECRET, {
@@ -79,7 +74,7 @@ const login = async (req: Request, res: Response) => {
             return res.status(400).send("invalid email");
         }
         const valid = await bcrypt.compare(password, user.password);
-        console.log(valid);
+    
         if (!valid) {
             return res.status(400).send("invalid password");
         }

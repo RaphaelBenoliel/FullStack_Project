@@ -22,7 +22,7 @@ const PostListRow: FC<{ post: Post, onPostSelected: (post: Post) => void }> = ({
   }, []);
 
   const onPress = () => {
-    console.log('Post selected with owner name:', post.owner.name, 'and id:', post._id);
+    console.log('Post selected with owner name:', post.owner.name, 'and id:', post.owner._id, );
     onPostSelected(post);
     if (user?._id === post.owner._id) {
       console.log('This is your post');

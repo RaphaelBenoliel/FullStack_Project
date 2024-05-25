@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.96% </span>
+                <span class="strong">67.27% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>40/58</span>
+                <span class='fraction'>37/55</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">68.96% </span>
+                <span class="strong">67.27% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>40/58</span>
+                <span class='fraction'>37/55</span>
             </div>
         
             
@@ -176,10 +176,7 @@
 <a name='L111'></a><a href='#L111'>111</a>
 <a name='L112'></a><a href='#L112'>112</a>
 <a name='L113'></a><a href='#L113'>113</a>
-<a name='L114'></a><a href='#L114'>114</a>
-<a name='L115'></a><a href='#L115'>115</a>
-<a name='L116'></a><a href='#L116'>116</a>
-<a name='L117'></a><a href='#L117'>117</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L114'></a><a href='#L114'>114</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -190,14 +187,14 @@
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -205,7 +202,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -249,7 +245,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -274,7 +269,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -322,7 +316,6 @@ class BaseController&lt;ModelType&gt; {
     }
     async getUser(req: Request, res: Response) {
         try {
-            console.log('reqqqqqqqqqq', req.params.token);
           const user = await this.itemModel.findOne({ tokens: req.params.token });
           <span class="missing-if-branch" title="if path not taken" >I</span>if (!user) {
 <span class="cstat-no" title="statement not covered" >            return res.status(404).send("token user not found");</span>
@@ -336,7 +329,7 @@ class BaseController&lt;ModelType&gt; {
       }
 &nbsp;
     async getById(req: Request, res: Response) {
-        console.log(req.params);
+        console.log("getById");
         try {
             const item = await this.itemModel.findById(req.params.id);
             <span class="missing-if-branch" title="if path not taken" >I</span>if (!item) {
@@ -363,7 +356,6 @@ class BaseController&lt;ModelType&gt; {
     
     async put(req: Request, res: Response) {
         console.log("put");
-        console.log(req.params);
         try {
             const item = await this.itemModel.findByIdAndUpdate(req.params.id, req.body );
             // console.log("item: ", item);
@@ -390,7 +382,6 @@ class BaseController&lt;ModelType&gt; {
         }
     }
     async updateOwnerPosts(req: Request, res: Response) {
-        console.log("rebody:  " , req.body);
 &nbsp;
         const ownerId = req.body.owner; // owner id
 &nbsp;
@@ -418,7 +409,7 @@ export default BaseController;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-05-19T19:48:35.628Z
+                at 2024-05-23T11:52:36.082Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

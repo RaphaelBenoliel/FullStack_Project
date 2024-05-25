@@ -68,9 +68,7 @@ describe('User API tests', () => {
 
     test('PUT /user/:id - should return 404 for non-existing user', async () => {
         const id   = '664d3aa2b2dabddaee6b8bd6';
-        const res = await request(app).put(`/user/${id}`).send(testUser).set('Authorization', `Bearer ${token}`);
-        console.log(res.body);
-        
+        const res = await request(app).put(`/user/${id}`).send(testUser).set('Authorization', `Bearer ${token}`);   
         expect(res.statusCode).toBe(404);
     });
 });

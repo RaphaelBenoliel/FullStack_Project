@@ -8,7 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const post_model_1 = __importDefault(require("../models/post_model"));
 class BaseController {
     constructor(itemModel) {
         this.itemModel = itemModel;
@@ -35,8 +39,7 @@ class BaseController {
     getUser(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log('reqqqqqqqqqq', req.body.token);
-                const user = yield this.itemModel.findOne({ tokens: req.body.token });
+                const user = yield this.itemModel.findOne({ tokens: req.params.token });
                 if (!user) {
                     return res.status(404).send("token user not found");
                 }
@@ -52,7 +55,7 @@ class BaseController {
     }
     getById(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(req.params);
+            console.log("getById");
             try {
                 const item = yield this.itemModel.findById(req.params.id);
                 if (!item) {
@@ -81,12 +84,12 @@ class BaseController {
             }
         });
     }
-    //updatye a sudent with the given id
     put(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("put");
             try {
-                const item = yield this.itemModel.findByIdAndUpdate(req.body._id, req.body);
+                const item = yield this.itemModel.findByIdAndUpdate(req.params.id, req.body);
+                // console.log("item: ", item);
                 if (!item) {
                     return res.status(404).send("not found");
                 }
@@ -102,7 +105,7 @@ class BaseController {
     }
     remove(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("student delete");
+            console.log("delete");
             try {
                 yield this.itemModel.findByIdAndDelete(req.params.id);
                 return res.status(200).send();
@@ -110,6 +113,24 @@ class BaseController {
             catch (error) {
                 console.log(error);
                 res.status(400).send(error.message);
+            }
+        });
+    }
+    updateOwnerPosts(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const ownerId = req.body.owner; // owner id
+            try {
+                // Find all posts belonging to the owner
+                const posts = yield post_model_1.default.find({ "owner._id": ownerId });
+                // Update each post
+                for (const post of posts) {
+                    yield post_model_1.default.updateOne({ _id: post._id }, { $set: req.body });
+                }
+                res.status(200).json({ message: "Owner's posts updated successfully" });
+            }
+            catch (error) {
+                console.error("Error updating owner's posts:", error);
+                res.status(500).json({ message: "Internal server error" });
             }
         });
     }

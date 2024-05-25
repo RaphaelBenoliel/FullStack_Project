@@ -12,7 +12,7 @@ const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
             definition: {
                 openapi: "3.0.0",
                 info: {
-                    title: "SCE Web Application Backend API",
+                    title: "Web Application Backend API",
                     version: "1.0.1",
                     description: "List all the routes of the backend REST API...",
                 },

@@ -5,18 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const postSchema = new mongoose_1.default.Schema({
-    title: {
+    comment: {
         type: String,
         required: true,
     },
-    message: {
+    commentUrl: {
         type: String,
-        required: true,
     },
-    owner: {
-        type: String,
-        required: true,
-    },
+    owner: { _id: String, name: String, imgUrl: String },
 });
 exports.default = mongoose_1.default.model("Post", postSchema);
 //# sourceMappingURL=post_model.js.map

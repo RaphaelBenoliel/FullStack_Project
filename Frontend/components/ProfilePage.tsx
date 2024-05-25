@@ -80,10 +80,10 @@ const ProfilePage: FC <{navigation: any }> = ({ navigation }) => {
         {user?.imgUrl !== "" && (
           <Image style={styles.avatar} source={{uri: user?.imgUrl.replace('localhost',BASE_URL) }} />
         )}
-            <Text style={styles.text}> Name</Text>
-            <Text style={styles.input}>{user?.name}</Text>
             <Text style={styles.text}> Email</Text>
             <Text style={styles.input}>{user?.email}</Text>
+            <Text style={styles.text}> Name</Text>
+            <Text style={styles.input}>{user?.name}</Text>
             <Text style={styles.text}> Phone</Text>     
             <Text style={styles.input}>{user?.phone}</Text>
             <Text style={styles.text}> Address</Text>

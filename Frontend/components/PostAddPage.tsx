@@ -112,6 +112,7 @@ const openCamera = async () => {
         onChangeText={setComment}
         placeholder="Enter your comment here..."
         placeholderTextColor="white"
+        multiline={true}
       />
 
       {commentUrl ? <Image source={{ uri: commentUrl }} style={styles.image} /> : null}

@@ -120,7 +120,8 @@ const openCamera = async () => {
         value={comment}
         onChangeText={setComment}
         placeholder={postEdit.comment}
-        placeholderTextColor="white"
+        placeholderTextColor="#aea5a5"
+        multiline={true}
 
       />
       
