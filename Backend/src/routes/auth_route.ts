@@ -104,6 +104,32 @@ const router = express.Router();
 *               $ref: '#/components/schemas/User'
 */
 router.post("/register", authController.register);
+/**
+* @swagger
+* /auth/google:
+*   post:
+*     summary: Sign in with Google
+*     tags: [Auth]
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             properties:
+*               idToken:
+*                 type: string
+*                 description: The Google ID token
+*             example:
+*               idToken: 'google-id-token'
+*     responses:
+*       200:
+*         description: The access & refresh tokens
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/Tokens'
+*/
 router.post('/google', authController.googleSignIn);
 
 /**
