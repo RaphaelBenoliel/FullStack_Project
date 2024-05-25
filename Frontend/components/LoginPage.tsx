@@ -42,8 +42,7 @@ const LoginPage: FC<{ navigation: any }> = ({ navigation }) => {
   , [auth]);
 
   const onSave = async () => {
-    console.log('Email:', email);
-    console.log('Password:', password);
+    
     setLoading(true);
     try {
       const response: any = await AuthApi.login(email, password);

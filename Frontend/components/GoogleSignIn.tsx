@@ -25,7 +25,7 @@ const GoogleSignIn: React.FC = () => {
     }, [response]);
 
     async function fetchUserInfo(token: string) {
-      console.log('Token:', token);
+
       try {
           if (!token) {
               console.error('Access token is missing or invalid.');

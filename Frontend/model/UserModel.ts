@@ -29,10 +29,10 @@ export const getUser = async (token: string) => {
     return response.data;
 }
 
-export const updateUser = async (token: any, _id: any, name: string, phone: string, address: string, imgUrl: string) => {
-    const response:any = await UserApi.updateUser(token, _id, name, phone, address , imgUrl);
+export const updateUser = async (token: any, _id: any, updateFields: any) => {
+    const response:any = await UserApi.updateUser(token, _id, updateFields);
     try {
-      const resposts:any = await PostApi.updatePostsOwner({_id, name, imgUrl});
+      const resposts:any = await PostApi.updatePostsOwner({_id, name: updateFields.name, imgUrl: updateFields.imgUrl});
       console.log('resposts:', resposts);
 
         

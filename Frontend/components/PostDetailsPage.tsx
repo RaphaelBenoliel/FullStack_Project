@@ -4,7 +4,7 @@ import PostModel from '../model/PostModel';
 import { BASE_URL } from '../config';
 
 const PostDetailsPage: FC<{ route: any, navigation: any }> = ({ route, navigation }) => {
-    console.log('PostDetailsPage mounted', route.params);
+    console.log('PostDetailsPage mounted');
     const post = route.params.post;
 
   //   useEffect(() => {

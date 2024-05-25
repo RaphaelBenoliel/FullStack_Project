@@ -17,8 +17,8 @@ const getUser = (token: String) => {
     return client.get(`/user/${token}`);
     };
 
-const updateUser = (token: string,  _id: string,name: string, phone: string, address: string , imgUrl:string) => {
-    return client.put(`user/${_id}`, { token, _id, name, phone, address , imgUrl});
+const updateUser = (token: string,  _id: string,updateFields:any) => {
+    return client.put(`user/${_id}`, { token, _id, name: updateFields.name, phone: updateFields.phone, address: updateFields.address , imgUrl: updateFields.imgUrl});
     };
     
 
