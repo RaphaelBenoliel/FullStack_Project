@@ -48,7 +48,7 @@ const PostListRow: FC<{ post: Post, onPostSelected: (post: Post) => void }> = ({
           }
           <View style={styles.userInfo}>
             <Text style={styles.name}>{post.owner.name}</Text>
-            <Text style={styles.timestamp}>{timestamp}</Text> 
+            {/* <Text style={styles.timestamp}>{timestamp}</Text>  */}
           </View>
         </View>
         <Text style={styles.comment}>{post.comment}</Text>
